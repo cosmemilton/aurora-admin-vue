@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ArrowDownLeft, ArrowUpRight, ChartNoAxesCombined, Wallet } from 'lucide-vue-next'
 import { CmLineChart, CmCard, CmDataTable, CmGridContainer, CmMetricCard, CmMetricGrid, CmNativeSelect, CmPage, CmPageHeader,
-  CmRow, CmSectionHeader, CmStack, CmText } from '@cosmemilton/ui-vue'
+  CmSectionHeader, CmStack, CmSummaryList, CmText } from '@cosmemilton/ui-vue'
 import { financeBalance, financeCompactMoney, financeDate, financeDateLabel, financeMoney, financeShortDate, sumFinance } from '../core/financeiro'
 import { useAuroraData } from '../composables/useAuroraData'
 const { entries } = useAuroraData()
@@ -40,7 +40,12 @@ const rows = computed(() => weeks.value.map(week => ({ id: week.start, cells: {
 const columns = [{ key: 'start', header: 'Semana' },
   ...Object.entries({ opening: 'Saldo inicial', inflow: 'Entradas previstas', outflow: 'Saídas previstas', balance: 'Saldo final' })
     .map(([key, header]) => ({ key, header, align: 'right' as const }))]
-const options = [15,30,60,90].map(value => ({ label: value + ' dias', value: String(value) }))
+const options = [30,60,90].map(value => ({ label: 'Próximos ' + value + ' dias', value: String(value) }))
+const projectionSummary = computed(() => [
+  { label: 'Menor saldo semanal', value: financeMoney(lowest.value.balance), detail: 'Em '+financeDateLabel(lowest.value.end) },
+  { label: 'Contas vencidas a receber', value: financeMoney(sumFinance(overdue.value,'entrada')) },
+  { label: 'Contas vencidas a pagar', value: financeMoney(sumFinance(overdue.value,'saida')) },
+])
 </script>
 
 <template>
@@ -54,23 +59,29 @@ const options = [15,30,60,90].map(value => ({ label: value + ' dias', value: Str
       <CmMetricCard title="Saídas previstas" :value="financeMoney(outflow)" :description="'No horizonte de ' + days + ' dias'" tone="warning"><template #icon><ArrowUpRight :size="19" /></template></CmMetricCard>
       <CmMetricCard title="Saldo ao fim do período" :value="financeMoney(realized + inflow - outflow)" :description="'Projeção em ' + financeDateLabel(end)" tone="primary" variant="gradient"><template #icon><ChartNoAxesCombined :size="19" /></template></CmMetricCard>
     </CmMetricGrid>
-    <CmGridContainer :columns="{ base: 1, lg: 2 }">
+    <CmGridContainer auto-fit min-column-width="26rem">
       <CmCard>
         <template #header><CmSectionHeader title="Evolução do saldo previsto" description="Saldo no fim de cada semana, com os lançamentos em atraso na primeira semana." /></template>
-        <CmLineChart :data="forecast" :value-format="financeCompactMoney" area />
+        <CmLineChart :data="forecast" :value-format="financeCompactMoney" :height="210" area />
       </CmCard>
       <CmCard>
         <template #header><CmSectionHeader title="Detalhes da projeção" /></template>
         <CmStack gap="md">
           <CmNativeSelect id="finance-projection-horizon" v-model="horizon" label="Horizonte da projeção" :options="options" />
-          <CmRow justify="between"><CmText tone="muted">Menor saldo previsto</CmText><CmText weight="bold">{{ financeMoney(lowest.balance) }}</CmText></CmRow>
-          <CmRow justify="between"><CmText tone="muted">Lançamentos em atraso</CmText><CmText weight="bold">{{ overdue.length }}</CmText></CmRow>
+          <CmSummaryList class="cm-summary-list--rows cm-summary-list--divided">
+            <div v-for="item in projectionSummary" :key="item.label" class="cm-summary-list__item">
+              <dt class="cm-summary-list__label">{{ item.label }}</dt><dd class="cm-summary-list__value">
+                <CmStack v-if="item.detail" gap="xs"><CmText weight="bold">{{ item.value }}</CmText><CmText size="sm" tone="muted">{{ item.detail }}</CmText></CmStack>
+                <template v-else>{{ item.value }}</template>
+              </dd>
+            </div>
+          </CmSummaryList>
         </CmStack>
       </CmCard>
     </CmGridContainer>
     <CmCard>
       <template #header><CmSectionHeader title="Movimentação semanal" description="Valores previstos pela data de vencimento." /></template>
-      <CmDataTable :rows="rows" :columns="columns" :page-sizes="[20]" :page-size="20" :column-settings="false" :min-width="550" label="Movimentação semanal" />
+      <CmDataTable :rows="rows" :columns="columns" :pagination="false" :column-settings="false" :min-width="620" label="Projeção semanal do fluxo de caixa" />
     </CmCard>
   </CmPage>
 </template>
