@@ -53,6 +53,7 @@ const nativeTags = new Set(['a','article','aside','b','button','canvas','caption
   'li','main','nav','ol','option','p','pre','section','select','small','span','strong','summary','table','tbody','td','textarea',
   'tfoot','th','thead','time','tr','ul'])
 const links = NuxtLink
+const router = useRouter()
 const entry = computed(() => (metadata as Record<string, { source: string; sections: Section[] }>)[props.item.name])
 const trees = computed(() => (fixtures as unknown as Record<string, (Fixture[] | null)[]>)[props.item.name] ?? [])
 const examples = computed(() => (entry.value?.sections ?? [{ title: props.item.label }]).map((section, index) => ({
@@ -81,6 +82,10 @@ function render(node: Fixture): VNodeChild {
   if (typeof node !== 'object') return node
   const props = { ...node.props }
   if (find(node.tag) === links) { props.to = props.href; delete props.href }
+  if (node.tag === 'CmBreadcrumb' && Array.isArray(props.items)) {
+    props.items = props.items.map(item => typeof item.href === 'string' && item.href.startsWith('/app/')
+      ? { ...item, href: router.resolve(item.href).href } : item)
+  }
   if ('htmlFor' in props) { props.for = props.htmlFor; delete props.htmlFor }
   if (node.tag === 'button') props.type ??= 'button'
   if (nativeTags.has(node.tag)) return h(node.tag, props, node.children.map(render))
