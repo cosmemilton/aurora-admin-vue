@@ -20,6 +20,7 @@ type Section = { title: string; description?: string; frame?: 'basic' | 'advance
 const props = defineProps<{ item: CatalogItem; mode?: 'basic' | 'advanced' }>()
 const { theme } = useAuroraTheme()
 const { toast } = UI.useCmToast()
+const signatureImage = ref<string | null>(null)
 type ButtonSampleGroup = {
   attribute: 'variant' | 'tone' | 'size'
   label: string
@@ -169,6 +170,24 @@ const nativeComponent = computed(() => layoutComponents.has(props.item.name) ? f
 const sampleCode = computed(() => {
   const name = props.item.name
   if (!library[name]) return ''
+  if (name === 'CmSignaturePad') {
+    return [
+      '<script setup lang="ts">',
+      "import { ref } from 'vue'",
+      "import { CmBox, CmSignaturePad, CmStack } from '@cosmemilton/ui-vue'",
+      'const assinatura = ref<string | null>(null)',
+      '</' + 'script>',
+      '',
+      '<template>',
+      '  <CmStack gap="sm">',
+      '    <CmSignaturePad :height="144" aria-label="Assinar o comprovante"',
+      '      clear-label="Limpar assinatura" @change="assinatura = $event" />',
+      '    <CmBox v-if="assinatura" as="img" :src="assinatura"',
+      '      alt="Assinatura capturada para o comprovante" max-width="100%" />',
+      '  </CmStack>',
+      '</template>',
+    ].join('\n')
+  }
   const simple = '  ' + (chartMarkup[name] ?? '<' + name + ' />')
   const markup = name === 'CmButton' ? '  <CmButton tone="primary">Salvar</CmButton>' : simple
   return "<script setup lang='ts'>\nimport { " + name + " } from '@cosmemilton/ui-vue'\n</" + "script>\n\n<template>\n" + markup + "\n</template>"
@@ -189,13 +208,23 @@ function notify() { toast('Alteração concluída.', { tone: 'success' }) }
     </UI.CmPageHeader>
     <UI.CmGridContainer :columns="{ base: 1, lg: 2 }" spacing="md">
       <div v-for="section in visible" :key="section.index" :class="{ 'aurora-span-full': section.wide }">
-       <UI.CmPanel :title="section.title" :description="section.description" :heading-level="2" role="region" :aria-label="section.title">
+       <UI.CmPanel :title="section.title" :description="section.description" :heading-level="2" role="region" :aria-label="section.title"
+         :style="item.name === 'CmSignaturePad' ? { height: '100%' } : undefined">
         <iframe v-if="!mode && section.frame" :src="frameUrl(section)" :title="item.name + ' · ' + section.title"
           class="cm-frame cm-frame--framed" height="320" style="--cm-frame-height:320px" />
         <CatalogMapDemo v-else-if="item.name === 'CmMap'" :interactive="section.index > 0" />
         <CatalogGallery v-else-if="item.name === 'CmGallery' || item.name === 'CmLightbox'"
           :advanced="section.index > 0" :lightbox="item.name === 'CmLightbox'" />
         <CatalogScheduler v-else-if="item.name === 'CmScheduler'" :advanced="section.index > 0" />
+        <template v-else-if="item.name === 'CmSignaturePad'">
+          <UI.CmSignaturePad v-if="section.index === 0" :height="144" aria-label="Desenhar assinatura" clear-label="Limpar" />
+          <UI.CmStack v-else gap="sm">
+            <UI.CmSignaturePad :height="144" aria-label="Assinar o comprovante"
+              clear-label="Limpar assinatura" @change="signatureImage = $event" />
+            <UI.CmBox v-if="signatureImage" as="img" :src="signatureImage"
+              alt="Assinatura capturada para o comprovante" max-width="100%" />
+          </UI.CmStack>
+        </template>
         <StaticExample v-else-if="section.tree && renderable(section.tree)" :tree="section.tree" />
         <UI.CmButton v-else-if="item.reference || item.name.startsWith('CmToast')" tone="primary" @click="notify">
           {{ item.reference ? 'Testar aviso' : 'Exibir toast' }}
@@ -262,7 +291,6 @@ function notify() { toast('Alteração concluída.', { tone: 'success' }) }
         <component v-else-if="item.name === 'CmComboboxMulti' || item.name === 'CmMultiSelect'" :is="item.name === 'CmComboboxMulti' ? UI.CmComboboxMulti : UI.CmMultiSelect" label="Situações" :options="selectable" />
         <UI.CmInputOTP v-else-if="item.name === 'CmInputOTP'" v-model="value" :length="6" />
         <UI.CmRichTextEditor v-else-if="item.name === 'CmRichTextEditor'" v-model="value" label="Observações do pedido" />
-        <UI.CmSignaturePad v-else-if="item.name === 'CmSignaturePad'" />
         <UI.CmLogView v-else-if="item.name === 'CmLogView'" :lines="['Pedido confirmado','Pagamento recebido','Envio programado']" />
         <UI.CmPasswordStrength v-else-if="item.name === 'CmPasswordStrength'" value="Aurora2026!" />
         <UI.CmPagination v-else-if="item.name === 'CmPagination'" v-model:page="demoPage" :page-count="8" />

@@ -1057,7 +1057,7 @@
     ]
   },
   "CmSignaturePad": {
-    "source": "formularios/workflows.tsx",
+    "source": "app/components/CatalogDemo.vue",
     "sections": [
       {
         "title": "Assinatura à mão livre"
