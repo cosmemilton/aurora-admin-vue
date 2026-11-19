@@ -2,7 +2,6 @@ import { demoInventory, stockStatus, type Product } from './erp'
 import { financeDate, financeStatus, seedEntries, type FinanceEntry } from './financeiro'
 import { compareAppointments, displayDate, initialOrders, orderCode, statuses, type ServiceOrder } from './servicos'
 import { downloadFile } from './downloadFile'
-import { reportPdf } from './reportPdf'
 
 export type ReportFormat = 'pdf' | 'csv' | 'json'
 type CellValue = string | number | null
@@ -164,11 +163,11 @@ export function reportJson(report: Report, rows: ReportRow[]) {
   return JSON.stringify(rows.map(row => Object.fromEntries(report.columns.map((column, index) => [column.key, row.cells[index]!.raw]))))
 }
 
-export function downloadReport(report: Report, status: string, format: ReportFormat) {
+export async function downloadReport(report: Report, status: string, format: ReportFormat) {
   const rows = reportRows(report, status)
   if (rows.length === 0) return
   const blob = format === 'pdf'
-    ? reportPdf(report, rows, status, reportTotals(report, rows))
+    ? (await import('./reportPdf')).reportPdf(report, rows, status, reportTotals(report, rows))
     : format === 'csv'
       ? new Blob([reportCsv(report, rows)], { type: 'text/csv;charset=utf-8' })
       : new Blob([reportJson(report, rows)], { type: 'application/json;charset=utf-8' })

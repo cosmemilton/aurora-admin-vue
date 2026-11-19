@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Boxes, CalendarDays, Package, ShoppingBag } from 'lucide-vue-next'
 import { defineComponent, type VNode } from 'vue'
-import { CmAppShell, CmAuthLayout, CmBadge, CmButton, CmCard, CmForm, CmGridContainer, CmInput, CmItem, CmNativeSelect,
+import { CmAppShell, CmAuthLayout, CmBadge, CmBox, CmButton, CmCard, CmForm, CmGridContainer, CmInput, CmItem, CmNativeSelect,
   CmPageHeader, CmRow, CmSectionHeader, CmSidebar, CmStack, CmText, CmThemeProvider, CmThemeScope, CmThemeToggle,
   CmTopbar, useCmToast, type SidebarGroup } from '@cosmemilton/ui-vue'
 import { asTheme, themes, useAuroraTheme } from '../composables/useAuroraTheme'
@@ -26,7 +26,7 @@ const areas = [
 const area = computed(() => areas.find(item => item.id === selected.value)!)
 const matches = computed(() => areas.filter(item => normalizeSearch(item.label).includes(normalizeSearch(query.value))))
 const groups = computed<SidebarGroup[]>(() => [{ id: 'etapas', label: 'Etapas', items: areas.map(item => ({
-  ...item, to: item.id, active: item.id === selected.value,
+  ...item, icon: advanced.value ? item.icon : undefined, to: item.id, active: item.id === selected.value,
 })) }])
 const SelectStep = defineComponent({
   props: { to: { type: String, required: true } },
@@ -47,17 +47,20 @@ const themeOptions = themes.map(option => ({ value: option.id, label: option.lab
       <CmButton type="submit" tone="primary" full-width>Validar exemplo</CmButton>
     </CmForm>
   </CmAuthLayout>
-  <CmGridContainer v-else-if="name === 'CmSidebar'" :template-columns="{ base: 'minmax(0,1fr)', sm: '14rem minmax(0,1fr)' }">
-    <CmSidebar :groups="groups" :active-pathname="selected" :link-component="SelectStep" brand="Expedição" nav-label="Etapas da expedição">
+  <CmGridContainer v-else-if="name === 'CmSidebar'" :template-columns="{ base: 'minmax(0, 1fr)', sm: 'auto minmax(0, 1fr)' }" gap="md">
+    <CmSidebar :groups="groups" :active-pathname="selected" :link-component="SelectStep" brand="Expedição" nav-label="Etapas da expedição"
+      width="min(14rem, calc(100vw - 2rem))" :min-height="240" :rail="advanced ? 'connectors' : 'edge'">
       <template #brandIcon><Package :size="18" /></template>
-      <template v-if="advanced" #footer><CmText>Depósito central</CmText></template>
+      <template v-if="advanced" #footer><CmText size="sm" tone="muted">Depósito central</CmText></template>
     </CmSidebar>
-    <CmCard><CmItem :title="area.label" :description="area.description" /></CmCard>
+    <CmBox as="section" surface="muted" radius="md" padding="md">
+      <CmItem :title="area.label" :description="area.description" />
+    </CmBox>
   </CmGridContainer>
   <CmAppShell v-else-if="name === 'CmAppShell'" :style="{ '--cm-app-shell-height': advanced ? '21rem' : '11rem', '--cm-app-shell-sidebar-width': '14rem' }">
     <template v-if="advanced" #sidebar="{ closeMobileSidebar, mobileSidebarOpen }">
       <CmSidebar :groups="groups" :active-pathname="selected" :link-component="SelectStep" :force-open="mobileSidebarOpen"
-        brand="Expedição" nav-label="Etapas da expedição" @navigate="closeMobileSidebar">
+        width="14rem" :min-height="240" brand="Expedição" nav-label="Etapas da expedição" @navigate="closeMobileSidebar">
         <template #brandIcon><Package :size="18" /></template>
       </CmSidebar>
     </template>
