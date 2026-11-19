@@ -11,6 +11,16 @@
       }
     ]
   },
+  "CmRatioBar": {
+    "source": "app/components/CatalogDemo.vue",
+    "sections": [
+      { "title": "Distribuição das horas da equipe" },
+      {
+        "title": "Divisão ajustável entre escalas",
+        "description": "Redistribua 40 horas pela alça, com o mouse ou as setas do teclado, preservando o mínimo de cada escala."
+      }
+    ]
+  },
   "CmComparisonLineChart": {
     "source": "app/components/CatalogDemo.vue",
     "sections": [

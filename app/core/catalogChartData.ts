@@ -18,6 +18,8 @@ export const orderAxis = { label: 'Pedidos', tone: 'info', domain: [0, 30] as [n
 
 const stageExample = ":data=\"[{ label: 'Primeiro contato', value: 42, tone: 'info' }, { label: 'Proposta', value: 28, tone: 'primary' }, { label: 'Contrato', value: 14, tone: 'success' }]\""
 export const chartMarkup: Record<string, string> = {
+  CmRatioBar: `<CmRatioBar aria-label="Capacidade da equipe"
+    :segments="[{ label: 'Atendimento', value: 24, tone: 'primary' }, { label: 'Plantão', value: 16, tone: 'success' }]" />`,
   CmBarChart: '<CmBarChart title="Pipeline comercial" orientation="horizontal" bar-thickness="sm" legend\n    ' + stageExample + ' />',
   CmDonutChart: '<CmDonutChart title="Carteira por etapa" variant="segmented" legend-layout="list"\n    ' + stageExample + ' />',
   CmComparisonLineChart: `<CmComparisonLineChart title="Receita e pedidos"

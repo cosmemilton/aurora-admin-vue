@@ -68,7 +68,13 @@ const sampleRows = [
   { id: 'p2', cells: { code: 'PED-1025', name: 'Organizador modular Nexo', status: 'Concluído' } },
 ]
 const sampleColumns = [{ key: 'code', header: 'Pedido', sortable: true }, { key: 'name', header: 'Produto', sortable: true }, { key: 'status', header: 'Situação' }]
-const chartData = [{ label: 'Recebidos', value: 24, tone: 'primary' }, { label: 'Em aberto', value: 9, tone: 'warning' }, { label: 'Concluídos', value: 38, tone: 'success' }]
+const serviceHours = ref(24)
+const capacity = [{ label: 'Atendimento', value: 24, tone: 'primary' }, { label: 'Plantão', value: 16, tone: 'success' }]
+const allocation = computed(() => capacity.map((segment, index) => ({
+  ...segment, min: 4, value: index === 0 ? serviceHours.value : 40 - serviceHours.value,
+})))
+const allocatedHours = computed(() => allocation.value.map(item => ({ label: item.label, value: item.value + ' h' })))
+const describeHours = ([service, onCall]: number[]) => service + ' horas de atendimento e ' + onCall + ' de plantão'
 const menu = selectable.map(item => ({ id: item.value, label: item.label, onSelect: () => { choice.value = item.value; toast(item.label, { tone: 'success' }) } }))
 
 function find(tag: string) {
@@ -159,7 +165,14 @@ function notify() { toast('Alteração concluída.', { tone: 'success' }) }
         <UI.CmLogView v-else-if="item.name === 'CmLogView'" :lines="['Pedido confirmado','Pagamento recebido','Envio programado']" />
         <UI.CmPasswordStrength v-else-if="item.name === 'CmPasswordStrength'" value="Aurora2026!" />
         <UI.CmPagination v-else-if="item.name === 'CmPagination'" v-model:page="demoPage" :page-count="8" />
-        <UI.CmRatioBar v-else-if="item.name === 'CmRatioBar'" :segments="chartData.map(item => ({ ...item, id: item.label }))" :height="14" />
+        <template v-else-if="item.name === 'CmRatioBar'">
+          <UI.CmRatioBar v-if="!section.index" aria-label="Capacidade da equipe: 24 h em atendimento e 16 h em plantão" :segments="capacity" />
+          <UI.CmStack v-else gap="md">
+            <UI.CmRatioBar :segments="allocation" :handle-index="0" handle-label="Horas de atendimento" :step="1"
+              :value-text="describeHours" @change="(values: number[]) => serviceHours = values[0] ?? 24" />
+            <UI.CmSummaryList divided :items="allocatedHours" />
+          </UI.CmStack>
+        </template>
         <UI.CmChoiceCardGroup v-else-if="item.name === 'CmChoiceCard' || item.name === 'CmChoiceCardGroup'" v-model="choice" label="Situação">
           <UI.CmChoiceCard v-for="option in selectable" :key="option.value" :title="option.label" :value="option.value" />
         </UI.CmChoiceCardGroup>
