@@ -42,14 +42,14 @@
     "sections": [
       {
         "title": "Área de retirada com cabeçalho",
-        "frame": "basic",
-        "wide": true
+        "wide": true,
+        "frame": "basic"
       },
       {
         "title": "Navegação entre etapas da expedição",
         "description": "Navegue entre etapas pelo menu da prévia. O cabeçalho oferece um acionador no celular.",
-        "frame": "advanced",
-        "wide": true
+        "wide": true,
+        "frame": "advanced"
       }
     ]
   },
@@ -586,7 +586,7 @@
     ]
   },
   "CmMap": {
-    "source": "dados/index.tsx",
+    "source": "dados/mapa.tsx",
     "sections": [
       {
         "title": "Unidades no mapa local",
@@ -726,14 +726,14 @@
     "sections": [
       {
         "title": "Título e descrição",
-        "frame": "basic",
-        "wide": true
+        "wide": true,
+        "frame": "basic"
       },
       {
         "title": "Agenda com seletor de período",
         "description": "O seletor de período atualiza o resumo e acompanha a quebra das ações em telas estreitas.",
-        "frame": "advanced",
-        "wide": true
+        "wide": true,
+        "frame": "advanced"
       }
     ]
   },
@@ -941,14 +941,14 @@
     "sections": [
       {
         "title": "Menu lateral de etapas",
-        "frame": "basic",
-        "wide": true
+        "wide": true,
+        "frame": "basic"
       },
       {
         "title": "Navegação recolhível com grupos",
         "description": "Escolha uma etapa, recolha a navegação e reabra pela marca para recuperar o menu completo.",
-        "frame": "advanced",
-        "wide": true
+        "wide": true,
+        "frame": "advanced"
       }
     ]
   },
@@ -1177,7 +1177,7 @@
     ]
   },
   "CmThemeScript": {
-    "source": "tema/index.tsx",
+    "source": "tema/inicializacao.tsx",
     "sections": [
       {
         "title": "Tema antes da hidratação",
@@ -1245,14 +1245,14 @@
     "sections": [
       {
         "title": "Título e identificação da filial",
-        "frame": "basic",
-        "wide": true
+        "wide": true,
+        "frame": "basic"
       },
       {
         "title": "Busca central de etapas",
         "description": "Experimente a pesquisa central para filtrar os resultados sem sair do painel.",
-        "frame": "advanced",
-        "wide": true
+        "wide": true,
+        "frame": "advanced"
       }
     ]
   },
@@ -1291,6 +1291,63 @@
         "title": "Editor com inspetor recolhível",
         "description": "Edite a etiqueta pelo inspetor e recolha as ferramentas preservando o valor digitado.",
         "wide": true
+      }
+    ]
+  },
+  "CmBadge": {
+    "source": "dados/apresentacao.tsx",
+    "sections": [
+      {
+        "title": "Situação ativa"
+      },
+      {
+        "title": "Etapas da entrega por tom e variante",
+        "description": "Combine texto, tom e variante para distinguir as etapas de uma entrega."
+      }
+    ]
+  },
+  "CmCard": {
+    "source": "dados/apresentacao.tsx",
+    "sections": [
+      {
+        "title": "Resumo do contrato"
+      },
+      {
+        "title": "Destaque com cabeçalho, lateral e rodapé"
+      },
+      {
+        "title": "Superfícies",
+        "description": "Compare as seis opções de variant com o mesmo tom primário.",
+        "wide": true
+      },
+      {
+        "title": "Padrões de fundo",
+        "description": "A propriedade pattern aplica o desenho atrás do conteúdo.",
+        "wide": true
+      }
+    ]
+  },
+  "CmItem": {
+    "source": "dados/apresentacao.tsx",
+    "sections": [
+      {
+        "title": "Ficha de cliente"
+      },
+      {
+        "title": "Visita técnica com situação e horário",
+        "description": "Apresente a situação como metadado e reserve a descrição para a janela de atendimento."
+      }
+    ]
+  },
+  "CmText": {
+    "source": "dados/apresentacao.tsx",
+    "sections": [
+      {
+        "title": "Texto de leitura"
+      },
+      {
+        "title": "Título, descrição e código de serviço",
+        "description": "Organize a hierarquia com um título semântico, descrição e identificador monoespaçado."
       }
     ]
   }

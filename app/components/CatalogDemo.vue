@@ -9,6 +9,7 @@ import metadata from '../core/catalogExamples.json'
 import fixtures from '../core/catalogTrees.json'
 import { useAuroraTheme } from '../composables/useAuroraTheme'
 import AuroraThemeMenu from './AuroraThemeMenu.vue'
+import CatalogMapDemo from './CatalogMapDemo.vue'
 import IsolatedDemo from './IsolatedDemo.vue'
 
 type Fixture = string | number | { tag: string; props: Record<string, unknown>; slots?: Record<string, Fixture[]>; children: Fixture[] }
@@ -123,14 +124,15 @@ function notify() { toast('Alteração concluída.', { tone: 'success' }) }
 <template>
   <IsolatedDemo v-if="mode" :name="item.name" :mode="mode" /><UI.CmPage v-else padding="none" gap="lg">
     <UI.CmPageHeader v-if="!mode" :title="item.label" :description="item.description" layout="wrap">
-      <template #eyebrow><UI.CmText as="code" family="mono" size="sm" tone="muted">{{ item.name }}</UI.CmText></template>
+      <template #eyebrow><div class="cm-page-header__meta"><UI.CmText inline family="mono" size="sm" tone="muted">{{ item.name }}</UI.CmText></div></template>
       <template v-if="item.docs" #actions><a :href="item.docs" target="_blank" rel="noreferrer" class="cm-link cm-link--button">Documentação da API ↗</a></template>
     </UI.CmPageHeader>
-    <UI.CmGridContainer :columns="{ base: 1, lg: 2 }">
-      <UI.CmCard v-for="section in visible" :key="section.index" :class="{ 'aurora-span-full': section.wide || mode }">
-        <template v-if="!mode" #header><UI.CmSectionHeader :title="section.title" :description="section.description" /></template>
+    <UI.CmGridContainer :columns="{ base: 1, lg: 2 }" spacing="md">
+      <div v-for="section in visible" :key="section.index" :class="{ 'aurora-span-full': section.wide }">
+       <UI.CmPanel :title="section.title" :description="section.description" :heading-level="2" role="region" :aria-label="section.title">
         <iframe v-if="!mode && section.frame" :src="frameUrl(section)" :title="item.name + ' · ' + section.title"
-          class="aurora-demo-frame" loading="lazy" />
+          class="cm-frame cm-frame--framed" height="320" style="--cm-frame-height:320px" />
+        <CatalogMapDemo v-else-if="item.name === 'CmMap'" :interactive="section.index > 0" />
         <StaticExample v-else-if="section.tree && renderable(section.tree)" :tree="section.tree" />
         <UI.CmButton v-else-if="item.reference || item.name.startsWith('CmToast')" tone="primary" @click="notify">
           {{ item.reference ? 'Testar aviso' : 'Exibir toast' }}
@@ -262,7 +264,8 @@ function notify() { toast('Alteração concluída.', { tone: 'success' }) }
           <UI.CmText>Pedido da equipe comercial</UI.CmText>
         </component>
         <UI.CmText v-else tone="muted">Exemplo interativo disponível na documentação da versão React.</UI.CmText>
-      </UI.CmCard>
+       </UI.CmPanel>
+      </div>
     </UI.CmGridContainer>
     <UI.CmEmpty v-if="!visible.length" title="Exemplo não encontrado" />
     <template v-if="!mode">

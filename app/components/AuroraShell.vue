@@ -2,7 +2,7 @@
 import { computed, defineComponent, h, nextTick, ref, watch, type VNode } from 'vue'
 import { RouterLink } from 'vue-router'
 import { Activity, ArrowRight, Bell, CalendarDays, ChevronDown, Home, Layers3, Search } from 'lucide-vue-next'
-import { CmAppShell, CmButton, CmContainer, CmDropdownMenu, CmMegaMenuSearch, CmRow, CmSidebar, CmText, CmTopbar, useCmToast, type MegaMenuGroup, type MegaMenuItem, type SidebarGroup } from '@cosmemilton/ui-vue'
+import { CmAppShell, CmButton, CmContainer, CmDropdownMenu, CmMegaMenuSearch, CmRow, CmSeparator, CmSidebar, CmText, CmTopbar, useCmToast, type MegaMenuGroup, type MegaMenuItem, type SidebarGroup } from '@cosmemilton/ui-vue'
 import { APP_PATHS } from '../core/paths'
 import { navigation } from '../core/navigation'
 import { catalog, catalogByPath, categories } from '../core/catalog'
@@ -12,6 +12,11 @@ import AuroraThemeMenu from './AuroraThemeMenu.vue'
 const route = useRoute()
 const router = useRouter()
 const { user, auth } = useAuroraAuth()
+const userInitials = computed(() => {
+  const words = user.value?.name.trim().split(/\s+/) ?? []
+  const first = words[0] ?? ''
+  return (words.length > 1 ? first.charAt(0) + (words.at(-1) ?? '').charAt(0) : first.slice(0, 2)).toUpperCase()
+})
 const { toast } = useCmToast()
 const pathname = computed(() => route.path.toLowerCase().replace(/\/+$/, ''))
 const inCatalog = computed(() => pathname.value === APP_PATHS.catalog || pathname.value.startsWith(APP_PATHS.catalog + '/'))
@@ -50,7 +55,7 @@ const searchGroups: MegaMenuGroup[] = [
     icon: h(page.icon, { size: 17, 'aria-hidden': true }),
   })) })),
   { id: 'component-examples', label: 'Exemplos da cm-ui', items: [...catalog].sort((a,b) => a.name.localeCompare(b.name)).map(item => ({
-    id: item.path, href: item.path, label: item.label, description: item.name + ' ? ' + item.description,
+    id: item.path, href: item.path, label: item.label, description: item.name + ' · ' + item.description,
     keywords: [item.slug.replaceAll('-', ' ')], icon: h(item.category.icon, { size: 17, 'aria-hidden': true }),
   })) },
 ]
@@ -92,7 +97,7 @@ watch(() => route.fullPath, async () => {
       </CmSidebar>
     </template>
     <template #topbar="{ mobileMenuButton, mobileSidebarOpen }">
-      <CmTopbar>
+      <CmTopbar class="cm-topbar--bordered">
         <template #start>
           <RenderNode :node="mobileMenuButton" />
           <nav aria-label="breadcrumb" class="cm-breadcrumb">
@@ -104,7 +109,7 @@ watch(() => route.fullPath, async () => {
               <span aria-hidden="true" class="cm-breadcrumb__separator">/</span>
             </span>
             <span v-if="selectedDemo" class="cm-breadcrumb__item">
-              <NuxtLink :to="selectedDemo.categoryPath">{{ selectedDemo.category.label }}</NuxtLink>
+              <NuxtLink :to="selectedDemo.categoryPath" class="cm-breadcrumb__link">{{ selectedDemo.category.label }}</NuxtLink>
               <span aria-hidden="true" class="cm-breadcrumb__separator">/</span>
             </span>
             <span class="cm-breadcrumb__item"><span aria-current="page" class="cm-breadcrumb__current">{{ pageLabel }}</span></span>
@@ -112,19 +117,21 @@ watch(() => route.fullPath, async () => {
         </template>
         <template #center>
           <CmMegaMenuSearch v-model="query" :groups="searchGroups" :link-component="RouterLink" :disabled="mobileSidebarOpen"
-            class="aurora-search" placeholder="Buscar páginas" aria-label="Buscar páginas" keyboard-shortcut="k" @select="select">
+            class="cm-mega-search--md" placeholder="Buscar páginas" aria-label="Buscar páginas" keyboard-shortcut="k" @select="select">
             <template #icon><Search :size="17" aria-hidden="true" /></template>
           </CmMegaMenuSearch>
         </template>
         <template #end>
-          <CmRow align="center" gap="lg">
+          <CmRow align="center" gap="clamp(var(--space-xs), 1cqi, var(--space-lg))">
             <AuroraThemeMenu />
-            <NuxtLink to="/app/dashboard#atividade" aria-label="Ver atividade recente" class="cm-link cm-link--button"><Bell :size="17" /></NuxtLink>
-            <CmDropdownMenu v-if="user" :items="userItems">
+            <NuxtLink to="/app/dashboard#atividade" aria-label="Ver atividade recente" class="cm-link cm-link--button cm-link--tone-default"><Bell :size="17" aria-hidden="true" /></NuxtLink>
+            <CmSeparator orientation="vertical" length="1.5rem" spacing="none" aria-hidden="true" />
+            <CmDropdownMenu v-if="user" :items="userItems" align="end">
               <template #trigger="{ triggerAttrs }">
-                <CmButton v-bind="triggerAttrs" variant="ghost" class="aurora-user" :aria-label="'Menu do usuário: ' + user.name">
-                  <span class="aurora-user__avatar">{{ user.name.slice(0, 1) }}</span>
-                  <span class="aurora-user__name">{{ user.name }}</span><ChevronDown :size="15" />
+                <CmButton v-bind="triggerAttrs" variant="plain" size="sm" class="cm-user-menu__trigger cm-user-menu__trigger--slim cm-user-menu__trigger--slim-avatar-auto" :aria-label="[user.name, user.username].join(', ')">
+                  <span class="cm-avatar cm-avatar--sm">{{ userInitials }}</span>
+                  <span class="cm-user-menu__trigger-text"><span class="cm-user-menu__trigger-title">{{ user.name }}</span><span class="cm-user-menu__trigger-subtitle">{{ user.username }}</span></span>
+                  <span class="cm-user-menu__trigger-chevron" aria-hidden="true"><ChevronDown :size="14" /></span>
                 </CmButton>
               </template>
             </CmDropdownMenu>
