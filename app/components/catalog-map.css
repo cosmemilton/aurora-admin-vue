@@ -1,0 +1,64 @@
+@import "leaflet/dist/leaflet.css";
+
+.aurora-catalog-map {
+  position: relative;
+  min-height: 8rem;
+  height: 230px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-muted);
+}
+
+.aurora-catalog-map--interactive { height: 260px; }
+.aurora-catalog-map > .leaflet-container { position: absolute; inset: 0; font-family: inherit; }
+
+.aurora-map-pin-anchor { background: transparent; border: 0; }
+.aurora-map-pin {
+  --aurora-pin-color: var(--color-primary);
+  position: absolute;
+  inset: 1px auto auto 1px;
+  display: block;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  transform: rotate(-45deg);
+  border: 2px solid color-mix(in srgb, var(--color-background) 85%, transparent);
+  border-radius: 50% 50% 50% 0;
+  background: var(--aurora-pin-color);
+  box-shadow: var(--shadow-sm);
+}
+.aurora-map-pin::after {
+  position: absolute;
+  inset: 6px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-background) 90%, var(--aurora-pin-color));
+  content: "";
+}
+.aurora-map-pin--success { --aurora-pin-color: var(--color-success); }
+.aurora-map-pin--picked {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--aurora-pin-color) 25%, transparent), var(--shadow-md);
+}
+
+.aurora-catalog-map .leaflet-popup-content-wrapper,
+.aurora-catalog-map .leaflet-popup-tip {
+  background: var(--color-popover);
+  color: var(--color-popover-foreground);
+  box-shadow: var(--shadow-md);
+}
+.aurora-catalog-map .leaflet-popup-content-wrapper { border-radius: var(--radius-md); }
+.aurora-catalog-map .leaflet-bar a {
+  background: var(--color-card);
+  color: var(--color-card-foreground);
+  border-bottom-color: var(--color-border);
+}
+.aurora-catalog-map .leaflet-bar a:is(:hover, :focus) { background: var(--color-muted); }
+.aurora-catalog-map .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--color-card) 80%, transparent);
+  color: var(--color-muted-foreground);
+}
+.aurora-catalog-map .leaflet-control-attribution a { color: var(--color-primary); }
+html[data-theme="cm-v4-dark"] .aurora-catalog-map .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9) saturate(0.7);
+}
