@@ -1,0 +1,59 @@
+.aurora-search {
+  position: relative;
+  min-inline-size: 0;
+  inline-size: min(100%, 34rem);
+}
+
+.aurora-user__avatar {
+  display: grid;
+  place-items: center;
+  inline-size: 1.85rem;
+  block-size: 1.85rem;
+  flex: none;
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+  background: var(--color-muted);
+  font-weight: 700;
+}
+
+.aurora-span-full {
+  grid-column: 1 / -1;
+}
+
+.aurora-overview-charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-md);
+}
+
+.aurora-demo-frame {
+  display: block;
+  inline-size: 100%;
+  block-size: 27rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.aurora-demo-code {
+  max-inline-size: 100%;
+  padding: var(--space-md);
+  overflow: auto;
+  border-radius: var(--radius-md);
+  background: var(--color-muted);
+}
+
+.aurora-isolated {
+  padding: var(--space-md);
+}
+
+@media (min-width: 78rem) {
+  .aurora-overview-charts {
+    grid-template-columns: minmax(0, 1.95fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 47rem) {
+  .aurora-user__name {
+    display: none;
+  }
+}

@@ -1,0 +1,1297 @@
+{
+  "CmAccordion": {
+    "source": "feedback/navigation.tsx",
+    "sections": [
+      {
+        "title": "Perguntas sobre o pedido"
+      },
+      {
+        "title": "Detalhes de estoque abertos inicialmente",
+        "description": "Abra a seção de estoque por padrão e combine saldo e localização no conteúdo."
+      }
+    ]
+  },
+  "CmAlert": {
+    "source": "feedback/referencias.tsx",
+    "sections": [
+      {
+        "title": "Aviso de conexão",
+        "description": "O toast informa a pausa da sincronização e mantém o formulário no lugar."
+      },
+      {
+        "title": "Erro de importação",
+        "description": "A mensagem indica como corrigir o arquivo."
+      }
+    ]
+  },
+  "CmAlertDialog": {
+    "source": "feedback/referencias.tsx",
+    "sections": [
+      {
+        "title": "Confirmar uma alteração",
+        "description": "O botão muda o favorito e o toast confirma o resultado."
+      },
+      {
+        "title": "Desfazer um arquivamento",
+        "description": "A ação no toast permite recuperar o pedido enquanto a mensagem estiver visível."
+      }
+    ]
+  },
+  "CmAppShell": {
+    "source": "estrutura/oficina.tsx",
+    "sections": [
+      {
+        "title": "Área de retirada com cabeçalho",
+        "frame": "basic",
+        "wide": true
+      },
+      {
+        "title": "Navegação entre etapas da expedição",
+        "description": "Navegue entre etapas pelo menu da prévia. O cabeçalho oferece um acionador no celular.",
+        "frame": "advanced",
+        "wide": true
+      }
+    ]
+  },
+  "CmAspectRatio": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Capa horizontal em 16:9"
+      },
+      {
+        "title": "Comparação de formatos de capa",
+        "description": "Alterne entre dois formatos para visualizar a proporção de uma capa."
+      }
+    ]
+  },
+  "CmAuthLayout": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Cartão centralizado",
+        "frame": "basic"
+      },
+      {
+        "title": "Painel ao lado da imagem",
+        "frame": "advanced"
+      }
+    ]
+  },
+  "CmBox": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Superfície com espaçamento"
+      },
+      {
+        "title": "Ficha de expedição com borda e status",
+        "description": "Combine superfície, borda, largura máxima e semântica de artigo em um único bloco."
+      }
+    ]
+  },
+  "CmBreadcrumb": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Caminho no catálogo"
+      },
+      {
+        "title": "Hierarquia de pedidos com ícone de início",
+        "description": "Combine ícones e links do roteador para voltar a níveis anteriores do ERP."
+      }
+    ]
+  },
+  "CmButtonGroup": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Controles de quantidade"
+      },
+      {
+        "title": "Filtros de situação agrupados",
+        "description": "Agrupe filtros relacionados e indique a opção ativa também para o leitor de tela."
+      }
+    ]
+  },
+  "CmCalendar": {
+    "source": "dados/agenda.tsx",
+    "sections": [
+      {
+        "title": "Seleção de um dia"
+      },
+      {
+        "title": "Consulta ao expediente por data",
+        "description": "Navegue pelos meses e consulte o expediente de cada data selecionada."
+      }
+    ]
+  },
+  "CmCanvas": {
+    "source": "estrutura/oficina.tsx",
+    "sections": [
+      {
+        "title": "Prancheta pontilhada"
+      },
+      {
+        "title": "Etiqueta com fundo ajustável",
+        "description": "Troque o fundo da prancheta ao revisar a etiqueta centralizada."
+      }
+    ]
+  },
+  "CmCarousel": {
+    "source": "feedback/navigation.tsx",
+    "sections": [
+      {
+        "title": "Navegação entre produtos"
+      },
+      {
+        "title": "Requisição de produtos pelo carrossel",
+        "description": "Percorra produtos e adicione quantidades à requisição a partir de cada slide."
+      }
+    ]
+  },
+  "CmCheckbox": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Inclusão de itens arquivados"
+      },
+      {
+        "title": "Resumo por e-mail com frequência de envio",
+        "description": "A seleção libera a frequência de envio do resumo."
+      }
+    ]
+  },
+  "CmChoiceCard": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Embalagem opcional"
+      },
+      {
+        "title": "Frete expresso com preço e ícone",
+        "description": "Combine preço, ícone e seleção no mesmo cartão de frete."
+      }
+    ]
+  },
+  "CmChoiceCardGroup": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Uma modalidade de envio"
+      },
+      {
+        "title": "Seleção de várias modalidades",
+        "description": "Permita mais de uma modalidade com seleção múltipla e colunas responsivas."
+      }
+    ]
+  },
+  "CmCodeBlock": {
+    "source": "dados/apresentacao.tsx",
+    "sections": [
+      {
+        "title": "Trecho em JSON"
+      },
+      {
+        "title": "Arquivo identificado com ação de copiar",
+        "description": "Identifique o arquivo e copie o exemplo pelo controle integrado."
+      }
+    ]
+  },
+  "CmCol": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Identificação em coluna"
+      },
+      {
+        "title": "Horário de coleta alinhado à base",
+        "description": "Use o espaço vertical disponível para manter o horário de coleta na base do cartão."
+      }
+    ]
+  },
+  "CmCollapsible": {
+    "source": "feedback/navigation.tsx",
+    "sections": [
+      {
+        "title": "Detalhes de frete recolhidos"
+      },
+      {
+        "title": "Volumes separados abertos inicialmente",
+        "description": "Mantenha os detalhes abertos na primeira leitura e deixe o operador recolhê-los."
+      }
+    ]
+  },
+  "CmCombobox": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Busca por equipe"
+      },
+      {
+        "title": "Busca por atribuição da equipe",
+        "description": "Busque pela atribuição da equipe e veja o destino selecionado."
+      }
+    ]
+  },
+  "CmComboboxMulti": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Busca com seleção múltipla"
+      },
+      {
+        "title": "Equipes participantes do chamado",
+        "description": "Pesquise por atribuição e monte a lista de equipes que vão atender o chamado."
+      }
+    ]
+  },
+  "CmCommand": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Busca por destino"
+      },
+      {
+        "title": "Paleta com atalho e palavras associadas",
+        "description": "Use Ctrl+J ou ⌘J para abrir a paleta. Busque por “visita” e confirme o destino com Enter."
+      }
+    ]
+  },
+  "CmConfirmDialog": {
+    "source": "feedback/overlays.tsx",
+    "sections": [
+      {
+        "title": "Escolha do percurso de leitura"
+      },
+      {
+        "title": "Percurso guiado com contexto",
+        "description": "Ofereça percursos de leitura com contexto e rótulos próprios para a escolha."
+      }
+    ]
+  },
+  "CmContainer": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Conteúdo com largura máxima"
+      },
+      {
+        "title": "Coluna de leitura sobre uma faixa de fundo",
+        "description": "Limite a largura do texto mantendo a superfície de fundo em toda a faixa."
+      }
+    ]
+  },
+  "CmContextMenu": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Prioridade por menu contextual"
+      },
+      {
+        "title": "Atribuição do atendimento",
+        "description": "Clique com o botão direito ou ative o botão de ações para priorizar o pedido e assumir o atendimento."
+      }
+    ]
+  },
+  "CmDialog": {
+    "source": "feedback/overlays.tsx",
+    "sections": [
+      {
+        "title": "Detalhes do pedido"
+      },
+      {
+        "title": "Edição das instruções de entrega",
+        "description": "Envie o foco ao campo de edição e aplique as instruções pelo rodapé."
+      }
+    ]
+  },
+  "CmDisclosure": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Endereço recolhível"
+      },
+      {
+        "title": "Instruções editáveis que preservam o texto",
+        "description": "Edite a observação e recolha a seção. O texto é preservado ao abri-la novamente."
+      }
+    ]
+  },
+  "CmDrawer": {
+    "source": "feedback/overlays.tsx",
+    "sections": [
+      {
+        "title": "Ficha em gaveta lateral"
+      },
+      {
+        "title": "Filtro de prioridade em gaveta inferior",
+        "description": "Use a gaveta inferior para escolher a prioridade dos chamados."
+      }
+    ]
+  },
+  "CmDropdownMenu": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Menu de prioridades"
+      },
+      {
+        "title": "Menu do pedido com ações condicionais",
+        "description": "Abra com a seta para baixo, escolha uma ação pelas setas e feche com Escape."
+      }
+    ]
+  },
+  "CmEmpty": {
+    "source": "feedback/status.tsx",
+    "sections": [
+      {
+        "title": "Agenda sem atendimentos"
+      },
+      {
+        "title": "Busca vazia com recuperação dos pedidos",
+        "description": "Limpe a pesquisa diretamente no estado vazio para recuperar os pedidos."
+      }
+    ]
+  },
+  "CmField": {
+    "source": "formularios/fields.tsx",
+    "sections": [
+      {
+        "title": "Rótulo acima do campo"
+      },
+      {
+        "title": "Rótulo ao lado de um campo opcional",
+        "description": "Alinhe o rótulo e o campo na horizontal e sinalize o preenchimento opcional."
+      }
+    ]
+  },
+  "CmFileUpload": {
+    "source": "formularios/workflows.tsx",
+    "sections": [
+      {
+        "title": "Seleção de arquivo"
+      },
+      {
+        "title": "Comprovantes com limites de tipo e tamanho",
+        "description": "Controle a lista e identifique rejeições por extensão, tamanho ou quantidade."
+      }
+    ]
+  },
+  "CmFilterBar": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Busca por cidade"
+      },
+      {
+        "title": "Cidade e situação da remessa",
+        "description": "Cruze cidade e situação para atualizar a lista de remessas."
+      }
+    ]
+  },
+  "CmForm": {
+    "source": "formularios/workflows.tsx",
+    "sections": [
+      {
+        "title": "Cadastro de empresa"
+      },
+      {
+        "title": "Cadastro em colunas com área de relacionamento",
+        "description": "Organize os campos em colunas responsivas e leia seus valores pelo envio do formulário."
+      }
+    ]
+  },
+  "CmFormActions": {
+    "source": "formularios/workflows.tsx",
+    "sections": [
+      {
+        "title": "Salvar ou cancelar uma edição"
+      },
+      {
+        "title": "Envio habilitado após alteração",
+        "description": "Conecte ações externas ao formulário e libere o envio apenas quando houver alterações."
+      }
+    ]
+  },
+  "CmFrame": {
+    "source": "estrutura/oficina.tsx",
+    "sections": [
+      {
+        "title": "Documento de expedição"
+      },
+      {
+        "title": "Seleção de documento por etapa",
+        "description": "Selecione uma etapa para abrir seu documento em um quadro isolado e com título próprio."
+      }
+    ]
+  },
+  "CmGauge": {
+    "source": "dados/graficos.tsx",
+    "sections": [
+      {
+        "title": "Atingimento de meta"
+      },
+      {
+        "title": "Ocupação com escala e limite de capacidade",
+        "description": "Ajuste os postos ocupados para ver a escala personalizada e a troca de cor perto do limite."
+      }
+    ]
+  },
+  "CmGrid": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Colunas de larguras diferentes"
+      },
+      {
+        "title": "Entrega e frete em uma grade responsiva",
+        "description": "Dê mais colunas à descrição e empilhe os campos quando a tela ficar estreita."
+      }
+    ]
+  },
+  "CmGridContainer": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Duas colunas fixas"
+      },
+      {
+        "title": "Filiais distribuídas pela largura disponível",
+        "description": "Use autoFit para distribuir as filiais conforme a largura disponível."
+      }
+    ]
+  },
+  "CmHoverCard": {
+    "source": "feedback/overlays.tsx",
+    "sections": [
+      {
+        "title": "Perfil da operadora"
+      },
+      {
+        "title": "Perfil com situação e ramal",
+        "description": "Consulte situação e ramal ao focar o nome ou passar o ponteiro."
+      }
+    ]
+  },
+  "CmInput": {
+    "source": "formularios/fields.tsx",
+    "sections": [
+      {
+        "title": "Nome do produto"
+      },
+      {
+        "title": "Busca no estoque com ação de limpar"
+      },
+      {
+        "title": "Densidades do campo"
+      },
+      {
+        "title": "Leitura e edição desabilitada",
+        "description": "O código do produto aceita foco e cópia. O código da importação está desabilitado."
+      },
+      {
+        "title": "Ícone inicial e botão de visibilidade"
+      },
+      {
+        "title": "Entrada de inteiros e decimais",
+        "description": "Com numeric, a quantidade aceita dígitos e o peso admite um separador decimal."
+      }
+    ]
+  },
+  "CmInputGroup": {
+    "source": "formularios/fields.tsx",
+    "sections": [
+      {
+        "title": "Preço com prefixo de moeda"
+      },
+      {
+        "title": "Preço por unidade e cálculo do lote",
+        "description": "Combine moeda e unidade no mesmo campo e calcule o valor do lote."
+      }
+    ]
+  },
+  "CmInputOTP": {
+    "source": "formularios/fields.tsx",
+    "sections": [
+      {
+        "title": "Código de quatro posições"
+      },
+      {
+        "title": "Consulta de pedido por código completo",
+        "description": "Libere a pesquisa apenas depois de preencher as quatro posições."
+      }
+    ]
+  },
+  "CmInspector": {
+    "source": "estrutura/oficina.tsx",
+    "sections": [
+      {
+        "title": "Propriedades do papel"
+      },
+      {
+        "title": "Edição de etiqueta com prévia",
+        "description": "Edite uma propriedade no inspetor e confira a prévia da etiqueta."
+      }
+    ]
+  },
+  "CmLabel": {
+    "source": "formularios/fields.tsx",
+    "sections": [
+      {
+        "title": "Rótulo associado ao campo"
+      },
+      {
+        "title": "Indicação de preenchimento opcional",
+        "description": "Associe o rótulo ao controle e apresente o indicador opcional."
+      }
+    ]
+  },
+  "CmLink": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Link para clientes"
+      },
+      {
+        "title": "Destinos principais e secundários",
+        "description": "Destaque o destino principal e mantenha a ação secundária como link de texto."
+      }
+    ]
+  },
+  "CmListPanel": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Lista de pontos de retirada",
+        "wide": true
+      },
+      {
+        "title": "Remessas com filtros e contagem",
+        "description": "O painel mantém título, contagem, filtros responsivos e tabela alinhados.",
+        "wide": true
+      }
+    ]
+  },
+  "CmLogView": {
+    "source": "feedback/status.tsx",
+    "sections": [
+      {
+        "title": "Histórico do pedido"
+      },
+      {
+        "title": "Conferência do lote em tempo real",
+        "description": "Acrescente etapas concluídas com anúncio acessível e rolagem automática."
+      }
+    ]
+  },
+  "CmMap": {
+    "source": "dados/index.tsx",
+    "sections": [
+      {
+        "title": "Unidades no mapa local",
+        "wide": true
+      },
+      {
+        "title": "Seleção de ponto e camada de ruas",
+        "description": "Selecione unidades, marque um ponto de visita e carregue o mapa de ruas quando precisar.",
+        "wide": true
+      }
+    ]
+  },
+  "CmMegaMenu": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Atalhos de módulos"
+      },
+      {
+        "title": "Painel com grupos em duas colunas",
+        "description": "Abra Áreas de trabalho para navegar por grupos de módulos e consultar suas descrições."
+      }
+    ]
+  },
+  "CmMegaMenuSearch": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Busca na operação"
+      },
+      {
+        "title": "Busca por atividade em vários módulos",
+        "description": "Encontre páginas usando palavras associadas ao trabalho, como “visita” para Agenda técnica."
+      }
+    ]
+  },
+  "CmMenubar": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Pedidos abertos e concluídos"
+      },
+      {
+        "title": "Filtros por situação com contador",
+        "description": "O menu filtra os registros por situação e exibe a quantidade correspondente."
+      }
+    ]
+  },
+  "CmMetricGrid": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Resumo das entregas",
+        "wide": true
+      },
+      {
+        "title": "Indicadores de expedição por situação",
+        "description": "Defina uma, duas ou três colunas por breakpoint e dê um nome acessível ao conjunto.",
+        "wide": true
+      }
+    ]
+  },
+  "CmMultiSelect": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Seleção de equipes"
+      },
+      {
+        "title": "Distribuição do atendimento entre equipes",
+        "description": "Distribua um atendimento entre equipes e acompanhe as atribuições escolhidas."
+      }
+    ]
+  },
+  "CmNativeInput": {
+    "source": "formularios/fields.tsx",
+    "sections": [
+      {
+        "title": "Data de emissão"
+      },
+      {
+        "title": "Intervalo com datas mínima e máxima",
+        "description": "Vincule as datas inicial e final com limites nativos do navegador."
+      }
+    ]
+  },
+  "CmNativeSelect": {
+    "source": "formularios/fields.tsx",
+    "sections": [
+      {
+        "title": "Seleção de período"
+      },
+      {
+        "title": "Seletores dependentes de área e local",
+        "description": "Recalcule os locais disponíveis ao escolher a área de atendimento."
+      }
+    ]
+  },
+  "CmNavigationMenu": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Links de navegação"
+      },
+      {
+        "title": "Destinos identificados por ícones",
+        "description": "Identifique destinos com ícones e navegue entre módulos sem recarregar o aplicativo."
+      }
+    ]
+  },
+  "CmOptionRow": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Preferência de anexos"
+      },
+      {
+        "title": "Preferência com seletor de periodicidade",
+        "description": "Substitua o interruptor padrão por um seletor de periodicidade."
+      }
+    ]
+  },
+  "CmPage": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Resumo de atendimento"
+      },
+      {
+        "title": "Página de detalhe de um pedido",
+        "description": "Combine largura máxima, margem interna e distância entre as seções de um detalhe de pedido."
+      }
+    ]
+  },
+  "CmPageHeader": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Título e descrição",
+        "frame": "basic",
+        "wide": true
+      },
+      {
+        "title": "Agenda com seletor de período",
+        "description": "O seletor de período atualiza o resumo e acompanha a quebra das ações em telas estreitas.",
+        "frame": "advanced",
+        "wide": true
+      }
+    ]
+  },
+  "CmPagination": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Páginas numeradas"
+      },
+      {
+        "title": "Controle compacto com intervalo de registros",
+        "description": "A paginação compacta informa o intervalo exibido e permite percorrer os seis pedidos."
+      }
+    ]
+  },
+  "CmPanel": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Solicitações do dia"
+      },
+      {
+        "title": "Central de suporte com indicador no rodapé",
+        "description": "Altere o período no cabeçalho e acompanhe o tempo de resposta no rodapé."
+      }
+    ]
+  },
+  "CmPasswordStrength": {
+    "source": "formularios/fields.tsx",
+    "sections": [
+      {
+        "title": "Medidor de força da senha"
+      },
+      {
+        "title": "Comprimento mínimo e sugestões",
+        "description": "Exija doze caracteres e acompanhe as sugestões da biblioteca a cada alteração."
+      }
+    ]
+  },
+  "CmPopover": {
+    "source": "feedback/overlays.tsx",
+    "sections": [
+      {
+        "title": "Explicação junto ao acionador"
+      },
+      {
+        "title": "Seleção de situação no painel flutuante",
+        "description": "Aplique uma situação diretamente no painel e devolva o resultado ao acionador."
+      }
+    ]
+  },
+  "CmPortal": {
+    "source": "feedback/overlays.tsx",
+    "sections": [
+      {
+        "title": "Consulta da expedição"
+      },
+      {
+        "title": "Ficha de expedição com retorno à lista",
+        "description": "Renderize a ficha fora do cartão e retorne o foco à consulta ao fechar."
+      }
+    ]
+  },
+  "CmPortalPanel": {
+    "source": "feedback/overlays.tsx",
+    "sections": [
+      {
+        "title": "Consulta flutuante do plantão"
+      },
+      {
+        "title": "Escolha do canto da tela",
+        "description": "Escolha a posição da consulta flutuante sem deslocar o conteúdo da página."
+      }
+    ]
+  },
+  "CmProgress": {
+    "source": "feedback/status.tsx",
+    "sections": [
+      {
+        "title": "Avanço em porcentagem"
+      },
+      {
+        "title": "Separação por quantidade de itens"
+      },
+      {
+        "title": "Quatro espessuras de barra",
+        "description": "Os mesmos tamanhos de barThickness se aplicam ao CmBarChart."
+      },
+      {
+        "title": "Espessura personalizada",
+        "description": "Ajuste o valor numérico de barThickness para comparar as alturas."
+      }
+    ]
+  },
+  "CmProgressModal": {
+    "source": "feedback/status.tsx",
+    "sections": [
+      {
+        "title": "Preparo em uma etapa"
+      },
+      {
+        "title": "Acompanhamento de três etapas",
+        "description": "Acompanhe as etapas da simulação e receba o resultado por toast ao concluir."
+      }
+    ]
+  },
+  "CmRadioGroup": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Escolha da modalidade de entrega"
+      },
+      {
+        "title": "Prazo conforme a modalidade",
+        "description": "Descreva os meios de entrega e calcule o prazo conforme a escolha."
+      }
+    ]
+  },
+  "CmResizable": {
+    "source": "estrutura/oficina.tsx",
+    "sections": [
+      {
+        "title": "Painel de leitura ajustável"
+      },
+      {
+        "title": "Ficha de pedido com limites de largura",
+        "description": "Arraste a alça da ficha ou use as setas, Home e End para testar seus limites."
+      }
+    ]
+  },
+  "CmRichTextEditor": {
+    "source": "formularios/workflows.tsx",
+    "sections": [
+      {
+        "title": "Anotações com formatação"
+      },
+      {
+        "title": "Modelo de proposta com prévia do HTML",
+        "description": "Edite o texto da proposta e inspecione o HTML produzido pela barra de ferramentas."
+      }
+    ]
+  },
+  "CmRow": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Selo e texto na mesma linha"
+      },
+      {
+        "title": "Filtros removíveis com quebra de linha",
+        "description": "Agrupe filtros removíveis em uma linha que quebra quando falta espaço."
+      }
+    ]
+  },
+  "CmScrollArea": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Lista com altura limitada"
+      },
+      {
+        "title": "Grupos de remessas expansíveis",
+        "description": "Os grupos expansíveis crescem dentro da área de rolagem limitada."
+      }
+    ]
+  },
+  "CmSectionHeader": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Título da seção e descrição"
+      },
+      {
+        "title": "Lista expandida pelo cabeçalho",
+        "description": "A ação do cabeçalho expande a listagem sem sair da seção."
+      }
+    ]
+  },
+  "CmSelect": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Equipe responsável"
+      },
+      {
+        "title": "Seleção formatada com opção de limpar",
+        "description": "Formate o valor escolhido com a atribuição da equipe e permita limpar a seleção."
+      }
+    ]
+  },
+  "CmSeparator": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Divisória horizontal entre valores"
+      },
+      {
+        "title": "Divisórias verticais entre dados do lote",
+        "description": "Delimite grupos de metadados com separadores verticais de altura explícita."
+      }
+    ]
+  },
+  "CmSidebar": {
+    "source": "estrutura/oficina.tsx",
+    "sections": [
+      {
+        "title": "Menu lateral de etapas",
+        "frame": "basic",
+        "wide": true
+      },
+      {
+        "title": "Navegação recolhível com grupos",
+        "description": "Escolha uma etapa, recolha a navegação e reabra pela marca para recuperar o menu completo.",
+        "frame": "advanced",
+        "wide": true
+      }
+    ]
+  },
+  "CmSignalBars": {
+    "source": "dados/graficos.tsx",
+    "sections": [
+      {
+        "title": "Intensidade em quatro barras"
+      },
+      {
+        "title": "Conversão de porcentagem em cinco barras",
+        "description": "Converta uma medição de 0 a 100 em cinco barras e acompanhe a intensidade no controle."
+      }
+    ]
+  },
+  "CmSignalList": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Seleção de rede"
+      },
+      {
+        "title": "Intensidade, proteção e disponibilidade",
+        "description": "Mostre a intensidade em porcentagem, redes protegidas e redes indisponíveis."
+      }
+    ]
+  },
+  "CmSignaturePad": {
+    "source": "formularios/workflows.tsx",
+    "sections": [
+      {
+        "title": "Assinatura à mão livre"
+      },
+      {
+        "title": "Prévia da assinatura no comprovante",
+        "description": "Veja a imagem que será incluída no comprovante e experimente limpar o desenho."
+      }
+    ]
+  },
+  "CmSkeleton": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Linha de carregamento"
+      },
+      {
+        "title": "Transição do carregamento para o pedido",
+        "description": "Alterne entre o carregamento e o pedido para comparar o espaço reservado."
+      }
+    ]
+  },
+  "CmSlider": {
+    "source": "formularios/workflows.tsx",
+    "sections": [
+      {
+        "title": "Ajuste de volume"
+      },
+      {
+        "title": "Desconto em intervalos de cinco pontos",
+        "description": "Defina intervalos de cinco pontos, marque referências e formate o desconto em porcentagem."
+      }
+    ]
+  },
+  "CmSplitButton": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Escolha da métrica"
+      },
+      {
+        "title": "Filtros da fila de pedidos",
+        "description": "Reúna as quatro situações em um seletor e atualize a lista de pedidos ao escolher uma delas."
+      }
+    ]
+  },
+  "CmStack": {
+    "source": "estrutura/composicao.tsx",
+    "sections": [
+      {
+        "title": "Nome e descrição empilhados"
+      },
+      {
+        "title": "Endereços em linha ou coluna",
+        "description": "Os endereços mudam de coluna para linha a partir do breakpoint médio."
+      }
+    ]
+  },
+  "CmStatusDot": {
+    "source": "feedback/status.tsx",
+    "sections": [
+      {
+        "title": "Indicador de disponibilidade"
+      },
+      {
+        "title": "Monitoramento ao vivo ou pausado",
+        "description": "Associe o indicador pulsante à disponibilidade do monitoramento."
+      }
+    ]
+  },
+  "CmSwitch": {
+    "source": "formularios/choices.tsx",
+    "sections": [
+      {
+        "title": "Disponibilidade do plantão"
+      },
+      {
+        "title": "Disponibilidade com descrição do estado",
+        "description": "Vincule a disponibilidade ao controle e identifique por texto os dois estados."
+      }
+    ]
+  },
+  "CmTable": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Tabela de horários",
+        "wide": true
+      },
+      {
+        "title": "Conferência de volumes com totais",
+        "description": "Uma matriz fixa usa cabeçalhos de linha, totais e rolagem interna em telas pequenas.",
+        "wide": true
+      }
+    ]
+  },
+  "CmTabs": {
+    "source": "feedback/navigation.tsx",
+    "sections": [
+      {
+        "title": "Abas da ficha do cliente"
+      },
+      {
+        "title": "Apresentação em pastas",
+        "description": "Organize a ficha do cliente em abas com aparência de pastas."
+      }
+    ]
+  },
+  "CmTabsContent": {
+    "source": "feedback/navigation.tsx",
+    "sections": [
+      {
+        "title": "Conteúdo por seção"
+      },
+      {
+        "title": "Rascunho temporário por aba",
+        "description": "Digite uma anotação e troque de aba para testar a desmontagem do conteúdo inativo."
+      }
+    ]
+  },
+  "CmTabsList": {
+    "source": "feedback/navigation.tsx",
+    "sections": [
+      {
+        "title": "Lista de três abas"
+      },
+      {
+        "title": "Lista extensa com rolagem",
+        "description": "Experimente a rolagem da lista quando os títulos excedem a largura disponível."
+      }
+    ]
+  },
+  "CmTabsTrigger": {
+    "source": "feedback/navigation.tsx",
+    "sections": [
+      {
+        "title": "Seleção de seção"
+      },
+      {
+        "title": "Seção de cobrança desabilitada",
+        "description": "Percorra as seções disponíveis pelo teclado e mantenha Cobrança desabilitada."
+      }
+    ]
+  },
+  "CmTextarea": {
+    "source": "formularios/fields.tsx",
+    "sections": [
+      {
+        "title": "Observações do pedido"
+      },
+      {
+        "title": "Instruções com contador de caracteres",
+        "description": "Mostre quantos caracteres ainda cabem nas instruções de entrega."
+      }
+    ]
+  },
+  "CmThemeMenu": {
+    "source": "tema/index.tsx",
+    "sections": [
+      {
+        "title": "Menu de temas",
+        "frame": "basic"
+      },
+      {
+        "title": "Menu compacto com prévia da entrega",
+        "description": "Abra o menu compacto, escolha uma paleta e confira o resultado no cartão.",
+        "frame": "advanced"
+      }
+    ]
+  },
+  "CmThemeProvider": {
+    "source": "tema/index.tsx",
+    "sections": [
+      {
+        "title": "Paleta escura inicial",
+        "frame": "basic"
+      },
+      {
+        "title": "Paleta e densidade independentes",
+        "description": "O provider do exemplo combina paleta e densidade, mantendo as preferências apenas nesta prévia.",
+        "frame": "advanced"
+      }
+    ]
+  },
+  "CmThemeScope": {
+    "source": "tema/index.tsx",
+    "sections": [
+      {
+        "title": "Cartão em tema escuro",
+        "frame": "basic"
+      },
+      {
+        "title": "Duas paletas para o mesmo registro",
+        "description": "Compare o mesmo registro em duas paletas renderizadas lado a lado.",
+        "frame": "advanced"
+      }
+    ]
+  },
+  "CmThemeScript": {
+    "source": "tema/index.tsx",
+    "sections": [
+      {
+        "title": "Tema antes da hidratação",
+        "frame": "basic"
+      },
+      {
+        "title": "Atributos iniciais por paleta",
+        "description": "Escolha a paleta inicial e examine os atributos definidos pelo script antes da hidratação.",
+        "frame": "advanced"
+      }
+    ]
+  },
+  "CmThemeToggle": {
+    "source": "tema/index.tsx",
+    "sections": [
+      {
+        "title": "Seletor de tema",
+        "frame": "basic"
+      },
+      {
+        "title": "Seletor compacto com prévia",
+        "description": "O seletor compacto oferece as três paletas e compartilha a escolha com o cartão.",
+        "frame": "advanced"
+      }
+    ]
+  },
+  "CmToastNotice": {
+    "source": "feedback/status.tsx",
+    "sections": [
+      {
+        "title": "Notificação ao salvar"
+      },
+      {
+        "title": "Notificação com número da revisão",
+        "description": "Dispare uma notificação a cada revisão com título, duração e número da versão."
+      }
+    ]
+  },
+  "CmToastProvider": {
+    "source": "feedback/status.tsx",
+    "sections": [
+      {
+        "title": "Pilha no canto superior"
+      },
+      {
+        "title": "Posição da pilha configurável",
+        "description": "Escolha onde a pilha de notificações aparece antes de conferir o lote."
+      }
+    ]
+  },
+  "CmToolbar": {
+    "source": "estrutura/paineis.tsx",
+    "sections": [
+      {
+        "title": "Seletor de filial"
+      },
+      {
+        "title": "Barra com filtro de recebimento",
+        "description": "Combine a escolha da filial com uma ação para exibir somente as remessas recebidas."
+      }
+    ]
+  },
+  "CmTopbar": {
+    "source": "estrutura/oficina.tsx",
+    "sections": [
+      {
+        "title": "Título e identificação da filial",
+        "frame": "basic",
+        "wide": true
+      },
+      {
+        "title": "Busca central de etapas",
+        "description": "Experimente a pesquisa central para filtrar os resultados sem sair do painel.",
+        "frame": "advanced",
+        "wide": true
+      }
+    ]
+  },
+  "CmUserMenu": {
+    "source": "navegacao/index.tsx",
+    "sections": [
+      {
+        "title": "Perfil com atalho para pedidos"
+      },
+      {
+        "title": "Perfil compacto com atalhos da operação",
+        "description": "A apresentação compacta exibe a conta no cabeçalho do menu e oferece atalhos da operação."
+      }
+    ]
+  },
+  "CmWizard": {
+    "source": "feedback/navigation.tsx",
+    "sections": [
+      {
+        "title": "Percurso horizontal"
+      },
+      {
+        "title": "Percurso vertical com campo obrigatório",
+        "description": "Preencha a razão social para liberar o próximo passo do percurso vertical."
+      }
+    ]
+  },
+  "CmWorkbench": {
+    "source": "estrutura/oficina.tsx",
+    "sections": [
+      {
+        "title": "Área de trabalho da etiqueta",
+        "wide": true
+      },
+      {
+        "title": "Editor com inspetor recolhível",
+        "description": "Edite a etiqueta pelo inspetor e recolha as ferramentas preservando o valor digitado.",
+        "wide": true
+      }
+    ]
+  }
+}
