@@ -2,23 +2,11 @@
   grid-column: 1 / -1;
 }
 
-.aurora-overview-charts {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-md);
-}
-
 .aurora-demo-code {
   max-inline-size: 100%;
   padding: var(--space-md);
   overflow: auto;
   border-radius: var(--radius-md);
   background: var(--color-muted);
-}
-
-@media (min-width: 78rem) {
-  .aurora-overview-charts {
-    grid-template-columns: minmax(0, 1.95fr) minmax(0, 1fr);
-  }
 }
 

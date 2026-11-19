@@ -52,7 +52,8 @@ const cell = (value: unknown) => value as ListingCell
           </CmSectionHeader>
         </template>
         <CmStack v-if="section.kind === 'bar'" gap="md">
-          <CmBarChart v-if="section.bars.length" :data="section.bars" :height="section.height" :value-format="section.formatter" :title="section.title" />
+          <CmBarChart v-if="section.bars.length" :data="section.bars" :height="section.height" :value-format="section.formatter"
+            orientation="horizontal" :accessible-table-label="section.title" />
           <CmEmpty v-else :title="section.emptyTitle" />
           <CmRow v-if="section.note" justify="between" align="center" gap="md" wrap>
             <CmStack gap="xs">
@@ -64,7 +65,8 @@ const cell = (value: unknown) => value as ListingCell
           </CmRow>
         </CmStack>
         <CmStack v-else-if="section.kind === 'progress'" gap="md">
-          <CmProgress v-for="bar in section.bars" :key="bar.label" :label="bar.label" :value="bar.value" :max="section.max" show-value />
+          <CmProgress v-for="bar in section.bars" :key="bar.label" :label="bar.label" :value="bar.value" :max="section.max"
+            :value-format="({ value }: { value: number }) => value" show-value />
         </CmStack>
         <CmDataTable v-else-if="section.kind === 'table'" :rows="section.rows" :columns="section.columns" :min-width="section.minWidth"
           :empty-title="section.emptyTitle" :column-settings="false" :page-sizes="[10]" :label="section.title">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ArrowUpRight, ClipboardList, Clock3, Download, FolderKanban, GraduationCap, Headphones, ReceiptText, ShoppingBag, Sparkles, Target, UsersRound, Wallet } from 'lucide-vue-next'
-import { CmBadge, CmBarChart, CmButton, CmCard, CmComparisonLineChart, CmDataTable, CmDonutChart, CmGridContainer, CmIconBadge, CmMetricCard, CmMetricGrid,
-  CmNativeSelect, CmPage, CmPageHeader, CmProgress, CmRatioBar, CmRow, CmSectionHeader, CmStack, CmSummaryList, CmText, useCmToast } from '@cosmemilton/ui-vue'
+import { ArrowUpRight, BookOpen, Check, ClipboardList, Clock3, Download, FolderKanban, GraduationCap, Headphones, Layers3, LifeBuoy, ReceiptText, ShoppingBag, Sparkles, Target, UsersRound, Wallet } from 'lucide-vue-next'
+import { CmAvatar, CmBadge, CmBarChart, CmButton, CmCard, CmComparisonLineChart, CmDataTable, CmDonutChart, CmGridContainer, CmIconBadge, CmMetricCard, CmMetricGrid,
+  CmNativeSelect, CmPage, CmPageHeader, CmPanel, CmProgress, CmRatioBar, CmRow, CmSectionHeader, CmStack, CmSummaryList, CmText, CmTimeline, useCmToast } from '@cosmemilton/ui-vue'
 import { dashboardPeriods, getDashboardMetrics, exportDashboardMetrics, formatCurrency, formatNumber, periodOptions, type DashboardPeriod } from '../core/dashboard'
 import { pipeline, ticketStates, supportResponseTime, progressPanels, recentOrders, recentOrderDate, activity, activityDate, secondaryMetrics } from '../core/dashboardOperations'
 
@@ -54,25 +54,28 @@ function exportMetrics() {
   try { exportDashboardMetrics(period.value); toast('Download dos indicadores em CSV iniciado.', { tone: 'success' }) }
   catch { toast('Falha ao gerar o CSV. Tente exportar novamente.', { tone: 'danger' }) }
 }
-const tickets = ticketStates.map(item => ({ id: item.label, ...item }))
-const panelIcons = { cursos: GraduationCap, projetos: FolderKanban }
+const ticketSegments = ticketStates.map(({ label: id, tone, value }) => ({ id, tone, value }))
+const ticketSummary = ticketStates.map(item => ({ ...item, emphasis: true }))
+const operationIcons = { 'graduation-cap': GraduationCap, 'folder-kanban': FolderKanban, 'layers-3': Layers3, 'book-open': BookOpen,
+  'shopping-bag': ShoppingBag, headphones: Headphones, check: Check, 'users-round': UsersRound, 'receipt-text': ReceiptText, 'life-buoy': LifeBuoy }
 const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 const recentRows = recentOrders.map(order => ({
-  id: order.id, cells: { id: '#' + order.id, name: order.customer, date: recentOrderDate.format(new Date(order.date)),
+  id: order.id, cells: { id: { text: '#' + order.id, sortValue: Number(order.id) }, customer: { text: order.customer, initials: order.initials },
+    date: { text: recentOrderDate.format(new Date(order.date)), sortValue: order.date },
     total: { text: currency.format(order.total), sortValue: order.total }, status: { text: order.status, tone: order.tone } },
 }))
 const recentColumns = [
-  { key: 'id', header: 'Pedido', sortable: true }, { key: 'name', header: 'Cliente', sortable: true },
+  { key: 'id', header: 'Pedido', sortable: true, hideable: false }, { key: 'customer', header: 'Cliente', sortable: true },
   { key: 'date', header: 'Data', sortable: true }, { key: 'total', header: 'Valor', sortable: true, align: 'right' as const },
   { key: 'status', header: 'Situação', sortable: true },
 ]
 function recentValue(value: unknown) {
-  return typeof value === 'object' && value !== null ? value as {text: string; tone?: string} : { text: String(value) }
+  return typeof value === 'object' && value !== null ? value as {text: string; tone?: string; initials?: string} : { text: String(value) }
 }
 </script>
 
 <template>
-  <CmPage id="visao-geral" padding="none" gap="lg">
+  <CmPage id="visao-geral" as="section" full-width padding="none" gap="lg">
     <CmPageHeader title="Visão geral" :description="'Desempenho da operação · ' + summary.interval" layout="wrap">
       <template #actions>
         <CmRow align="end" gap="sm" wrap>
@@ -100,14 +103,16 @@ function recentValue(value: unknown) {
         <template #icon><component :is="icons[item.id as keyof typeof icons]" :size="18" /></template>
       </CmMetricCard>
     </CmMetricGrid>
-    <section id="analise" class="aurora-overview-charts" aria-label="Análise de desempenho">
+    <CmGridContainer as="section" id="analise" aria-label="Análise de desempenho" spacing="md"
+      :template-columns="{ base: 'minmax(0, 1fr)', xl: 'minmax(0, 1.95fr) minmax(0, 1fr)' }">
       <CmCard>
-        <CmComparisonLineChart :key="days" :data="points" :left-axis="{ label: 'Receita', domain: [0, report.revenueCeiling], valueFormat: formatCurrency.format, tickFormat: compact.format }"
+        <CmComparisonLineChart :key="days" :data="points" curve="smooth" x-labels="responsive" legend-position="header"
+          :left-axis="{ label: 'Receita', domain: [0, report.revenueCeiling], area: true, valueFormat: formatCurrency.format, tickFormat: compact.format }"
           :right-axis="{ label: 'Pedidos', domain: [0, report.orderCeiling], tone: 'primary-soft', valueFormat: formatNumber.format }"
           title="Receita e pedidos" description="Receita em reais e volume de pedidos" accessible-table-label="Receita e pedidos no período" :height="216" />
       </CmCard>
       <CmCard><CmDonutChart :data="traffic" title="Tráfego do site" description="Sessões por canal de aquisição" total-label="sessões" variant="segmented" legend-layout="list" accessible-table-label="Sessões e participação por canal" :value-format="formatNumber.format" /></CmCard>
-    </section>
+    </CmGridContainer>
     <CmStack as="section" gap="md" aria-label="Acesso rápido">
       <CmSectionHeader title="Acesso rápido" />
       <CmGridContainer :columns="{ base: 1, sm: 2, xl: 4 }" spacing="md">
@@ -125,14 +130,16 @@ function recentValue(value: unknown) {
     <CmStack as="section" gap="md" aria-label="Operações">
       <CmSectionHeader title="Operações" />
       <CmGridContainer :columns="{ base: 1, lg: 2 }" spacing="md">
-        <CmCard id="vendas"><template #header><CmSectionHeader title="Pipeline de vendas" description="Oportunidades por etapa" /></template><CmBarChart :data="[...pipeline]" /></CmCard>
-        <CmCard id="suporte">
-          <template #header><CmSectionHeader title="Central de suporte" description="Situação dos chamados">
-            <template #icon><Headphones :size="18" aria-hidden="true" /></template>
-          </CmSectionHeader></template>
+        <CmPanel id="vendas" title="Pipeline de vendas" :heading-level="3" description="Oportunidades por etapa">
+          <template #icon><Target :size="18" /></template>
+          <CmBarChart :data="[...pipeline]" orientation="horizontal" bar-thickness="sm" legend show-values
+            accessible-table-label="Quantidade de oportunidades por etapa do pipeline" />
+        </CmPanel>
+        <CmPanel id="suporte" title="Central de suporte" :heading-level="3" description="Situação dos chamados">
+          <template #icon><Headphones :size="18" /></template>
           <CmStack gap="md">
-            <CmRatioBar :segments="tickets" :height="10" aria-hidden="true" />
-            <CmSummaryList :divided="false" :items="tickets.map(item => ({ ...item, emphasis: true }))" />
+            <CmRatioBar :segments="ticketSegments" :height="10" aria-hidden="true" />
+            <CmSummaryList :divided="false" :items="ticketSummary" />
           </CmStack>
           <template #footer>
             <CmRow full-width align="center" justify="between" gap="sm" wrap>
@@ -140,32 +147,44 @@ function recentValue(value: unknown) {
               <CmText size="sm" weight="bold">{{ supportResponseTime }}</CmText>
             </CmRow>
           </template>
-        </CmCard>
-        <CmCard v-for="panel in progressPanels" :id="panel.id" :key="panel.id">
-          <template #header><CmSectionHeader :title="panel.title" :description="panel.description" /></template>
+        </CmPanel>
+        <CmPanel v-for="panel in progressPanels" :id="panel.id" :key="panel.id" :title="panel.title" :description="panel.description" :heading-level="3">
+          <template #icon><component :is="operationIcons[panel.icon]" :size="18" /></template>
           <CmStack gap="md" role="list">
             <CmRow v-for="item in panel.items" :key="item.title" role="listitem" gap="sm" align="center">
-              <CmIconBadge tone="primary"><component :is="panelIcons[panel.id]" :size="16" /></CmIconBadge>
-              <CmStack grow gap="xs"><CmProgress :value="item.progress" :label="item.title" show-value /><CmText size="xs" tone="muted">{{ item.detail }}</CmText></CmStack>
+              <CmAvatar v-if="'initials' in item" size="sm" :fallback="item.initials" aria-hidden="true" />
+              <CmIconBadge v-else size="sm" aria-hidden="true"><component :is="operationIcons[item.icon]" :size="16" /></CmIconBadge>
+              <CmStack grow :min-width="0" gap="xs"><CmProgress :value="item.progress" :label="item.title" show-value /><CmText size="xs" tone="muted">{{ item.detail }}</CmText></CmStack>
             </CmRow>
           </CmStack>
-        </CmCard>
-        <CmCard><template #header><CmSectionHeader title="Pedidos recentes" description="Últimas transações registradas" /></template>
-          <CmDataTable :columns="recentColumns" :rows="recentRows" :pagination="false" :min-width="500" label="Pedidos recentes">
-            <template #cell="{ value }"><CmBadge v-if="recentValue(value).tone" :tone="recentValue(value).tone">{{ recentValue(value).text }}</CmBadge><span v-else>{{ recentValue(value).text }}</span></template>
+        </CmPanel>
+      </CmGridContainer>
+      <CmGridContainer spacing="md" :template-columns="{ base: 'minmax(0, 1fr)', xl: 'minmax(0, 1.6fr) minmax(0, 1fr)' }">
+        <CmCard id="pedidos" role="region" aria-label="Pedidos recentes">
+          <CmDataTable title="Pedidos recentes" description="Últimas transações registradas" :columns="recentColumns" :rows="recentRows"
+            table-key="aurora.dashboard.pedidos-recentes" default-sort-key="date" default-sort-direction="desc" :pagination="false" :min-width="500" label="Pedidos recentes">
+            <template #cell="{ value }">
+              <CmRow v-if="recentValue(value).initials" align="center" gap="xs">
+                <CmAvatar size="xs" :fallback="recentValue(value).initials" aria-hidden="true" />{{ recentValue(value).text }}
+              </CmRow>
+              <CmBadge v-else-if="recentValue(value).tone" :tone="recentValue(value).tone">{{ recentValue(value).text }}</CmBadge>
+              <template v-else>{{ recentValue(value).text }}</template>
+            </template>
           </CmDataTable>
         </CmCard>
-        <CmCard id="atividade"><template #header><CmSectionHeader title="Atividade recente" :description="activityDate" /></template>
-          <CmStack role="list" gap="md">
-            <CmRow v-for="item in activity" :key="item.label" gap="sm" align="center" role="listitem">
-              <CmIconBadge :tone="item.tone"><Clock3 :size="15" /></CmIconBadge>
-              <CmStack gap="none" grow><CmText weight="semibold">{{ item.title }}</CmText><CmText size="xs" tone="muted">{{ item.description }}</CmText></CmStack>
-              <CmText size="sm" tone="muted">{{ item.label }}</CmText>
-            </CmRow>
-          </CmStack>
-        </CmCard>
+        <CmPanel id="atividade" title="Atividade recente" :heading-level="3" :description="activityDate">
+          <template #icon><Clock3 :size="18" /></template>
+          <CmTimeline :items="activity" :label-width="44">
+            <template #label="{ item }"><CmText as="time" :datetime="'2026-06-25T' + item.label + ':00-03:00'" inline size="xs">{{ item.label }}</CmText></template>
+            <template #marker="{ item }"><component :is="operationIcons[item.icon as keyof typeof operationIcons]" :size="item.id === 'case' || item.id === 'purchase' ? 13 : 14" /></template>
+          </CmTimeline>
+        </CmPanel>
       </CmGridContainer>
-      <CmMetricGrid label="Indicadores operacionais"><CmMetricCard v-for="item in secondaryMetrics" :key="item.title" :title="item.title" :value="item.value" :description="item.description" :tone="item.tone" /></CmMetricGrid>
+      <CmMetricGrid label="Indicadores complementares">
+        <CmMetricCard v-for="item in secondaryMetrics" :key="item.title" :title="item.title" :value="item.value" :description="item.description" :tone="item.tone">
+          <template #icon><component :is="operationIcons[item.icon]" :size="16" aria-hidden="true" /></template>
+        </CmMetricCard>
+      </CmMetricGrid>
     </CmStack>
   </CmPage>
 </template>
