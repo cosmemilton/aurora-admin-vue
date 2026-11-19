@@ -113,7 +113,10 @@ const sampleCode = computed(() => {
   return "<script setup lang='ts'>\nimport { " + name + " } from '@cosmemilton/ui-vue'\n</" + "script>\n\n<template>\n" + markup + "\n</template>"
 })
 const renderable = (tree?: Fixture[]) => !!tree?.length && tree.every(understood)
-const frameUrl = (section: Section) => APP_PATHS.isolatedExample + '/' + props.item.category.id + '/' + props.item.slug + '/' + section.frame + '?tema=' + encodeURIComponent(theme.value)
+const frameUrl = (section: Section) => router.resolve({
+  path: `${APP_PATHS.isolatedExample}/${props.item.category.id}/${props.item.slug}/${section.frame}`,
+  query: { tema: theme.value },
+}).href
 function notify() { toast('Alteração concluída.', { tone: 'success' }) }
 </script>
 
