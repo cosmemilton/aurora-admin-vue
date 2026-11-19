@@ -1,4 +1,42 @@
 {
+  "CmBarChart": {
+    "source": "app/components/CatalogDemo.vue",
+    "sections": [
+      {
+        "title": "Oportunidades em barras verticais"
+      },
+      {
+        "title": "Barras horizontais com valores e legenda",
+        "description": "Distribua barras horizontais por etapa, controle a espessura e exiba as cores na legenda."
+      }
+    ]
+  },
+  "CmComparisonLineChart": {
+    "source": "app/components/CatalogDemo.vue",
+    "sections": [
+      {
+        "title": "Comparação entre duas séries",
+        "wide": true
+      },
+      {
+        "title": "Receita e pedidos em dois eixos",
+        "description": "Leia grandezas diferentes em dois eixos, com moeda, área preenchida e escalas próprias.",
+        "wide": true
+      }
+    ]
+  },
+  "CmDonutChart": {
+    "source": "app/components/CatalogDemo.vue",
+    "sections": [
+      {
+        "title": "Total de oportunidades no anel"
+      },
+      {
+        "title": "Anel segmentado com legenda em lista",
+        "description": "Separe os segmentos e use a legenda em lista para conferir a participação de cada etapa."
+      }
+    ]
+  },
   "CmAccordion": {
     "source": "feedback/navigation.tsx",
     "sections": [

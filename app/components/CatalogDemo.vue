@@ -7,6 +7,7 @@ import { APP_PATHS } from '../core/paths'
 import type { CatalogItem } from '../core/catalog'
 import metadata from '../core/catalogExamples.json'
 import fixtures from '../core/catalogTrees.json'
+import { chartMarkup, orderAxis, pipelineStages, revenueAxis, weeklyPoints } from '../core/catalogChartData'
 import { useAuroraTheme } from '../composables/useAuroraTheme'
 import AuroraThemeMenu from './AuroraThemeMenu.vue'
 import CatalogMapDemo from './CatalogMapDemo.vue'
@@ -109,7 +110,7 @@ const nativeComponent = computed(() => layoutComponents.has(props.item.name) ? f
 const sampleCode = computed(() => {
   const name = props.item.name
   if (!library[name]) return ''
-  const simple = '  <' + name + ' />'
+  const simple = '  ' + (chartMarkup[name] ?? '<' + name + ' />')
   const markup = name === 'CmButton' ? '  <CmButton tone="primary">Salvar</CmButton>' : simple
   return "<script setup lang='ts'>\nimport { " + name + " } from '@cosmemilton/ui-vue'\n</" + "script>\n\n<template>\n" + markup + "\n</template>"
 })
@@ -237,8 +238,22 @@ function notify() { toast('Alteração concluída.', { tone: 'success' }) }
           <UI.CmButton variant="outline" size="sm" @click="notify">Conferir remessa</UI.CmButton>
           <UI.CmButton variant="ghost" size="sm" @click="notify">Marcar como conferida</UI.CmButton>
         </UI.CmDataTableActions>
-        <UI.CmBarChart v-else-if="item.name === 'CmBarChart'" :data="chartData" />
-        <UI.CmDonutChart v-else-if="item.name === 'CmDonutChart'" :data="chartData" />
+        <UI.CmBarChart v-else-if="item.name === 'CmBarChart'" :data="pipelineStages"
+          :title="section.index ? 'Pipeline comercial' : 'Oportunidades por etapa'"
+          :height="section.index ? 180 : 160" :orientation="section.index ? 'horizontal' : 'vertical'"
+          :bar-thickness="section.index ? 'sm' : undefined" :legend="!!section.index" legend-layout="list"
+          :accessible-table-label="section.index ? 'Quantidade de oportunidades por etapa' : 'Oportunidades por etapa'" />
+        <UI.CmComparisonLineChart v-else-if="item.name === 'CmComparisonLineChart'" :data="weeklyPoints"
+          :title="section.index ? 'Receita e volume de pedidos' : 'Receita e pedidos'"
+          :height="section.index ? 200 : 160" :curve="section.index ? 'smooth' : 'linear'"
+          :x-labels="section.index ? 'responsive' : 'compact'" :legend-position="section.index ? 'header' : 'footer'"
+          :left-axis="section.index ? revenueAxis : { label: 'Receita (R$)' }"
+          :right-axis="section.index ? orderAxis : { label: 'Pedidos', tone: 'info' }"
+          :accessible-table-label="section.index ? 'Receita em reais e número de pedidos por semana' : 'Receita e pedidos'" />
+        <UI.CmDonutChart v-else-if="item.name === 'CmDonutChart'" :data="pipelineStages"
+          :title="section.index ? 'Carteira por etapa' : 'Oportunidades'" :total-label="section.index ? 'oportunidades' : 'no funil'"
+          :variant="section.index ? 'segmented' : 'continuous'" :legend-layout="section.index ? 'list' : 'inline'"
+          :accessible-table-label="section.index ? 'Distribuição da carteira por etapa comercial' : 'Oportunidades'" />
         <UI.CmProgress v-else-if="item.name === 'CmProgress'" label="Conclusão" :value="72" show-value />
         <UI.CmAccordion v-else-if="item.name === 'CmAccordion'" :items="[{ id: '1', title: 'Detalhes do pedido', content: 'Entrega prevista para amanhã.' }, { id: '2', title: 'Contato', content: 'Equipe de atendimento.' }]" />
         <UI.CmTabs v-else-if="item.name.startsWith('CmTabs')" default-value="one">
