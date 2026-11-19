@@ -22,16 +22,17 @@ export type DashboardItem = {
 
 type Section = { title: string; description?: string; action?: DashboardLink; emptyTitle?: string }
 export type DashboardSection = Section & (
-  | { kind: 'bar'; bars: DashboardBar[]; height?: number; formatter?: (value: number) => string; note?: DashboardItem }
+  | { kind: 'bar'; bars: DashboardBar[]; standalone?: boolean; height?: number; formatter?: (value: number) => string; note?: DashboardItem }
   | { kind: 'progress'; bars: DashboardBar[]; max: number }
   | { kind: 'list' | 'timeline'; items: DashboardItem[]; connected?: boolean }
-  | { kind: 'table'; columns: ListingColumn[]; rows: ListingRow[]; minWidth: number }
+  | { kind: 'table'; columns: ListingColumn[]; rows: ListingRow[]; minWidth: number; density?: string }
 )
 
 export type DomainDashboard = {
   title: string
   description: string
   metricLabel: string
+  minColumnWidth?: string
   actions: DashboardLink[]
   metrics: DashboardMetric[]
   sections: DashboardSection[]
@@ -89,7 +90,7 @@ function erpDashboard(orders: Order[], products: Product[]): DomainDashboard {
 
   return {
     title: 'Painel do ERP', description: 'Acompanhe vendas, pedidos e os produtos que precisam de reposição.',
-    metricLabel: 'Indicadores do ERP', actions: [{ label: 'Gerenciar pedidos', href: '/app/erp/pedidos', icon: 'clipboard-list' }],
+    metricLabel: 'Indicadores do ERP', minColumnWidth: '26rem', actions: [{ label: 'Gerenciar pedidos', href: '/app/erp/pedidos', icon: 'clipboard-list' }],
     metrics: [
       { title: 'Receita confirmada', value: formatMoney(sold.reduce((sum, order) => sum + orderTotal(order), 0)), description: 'Pedidos aprovados, enviados e entregues', tone: 'primary', variant: 'gradient', icon: 'circle-dollar-sign' },
       { title: 'Pedidos pendentes', value: pending.length, description: 'Aguardando aprovação', tone: 'warning', variant: 'soft', icon: 'clipboard-list' },
@@ -100,7 +101,7 @@ function erpDashboard(orders: Order[], products: Product[]): DomainDashboard {
       { kind: 'progress', title: 'Pedidos por status', description: `${orders.length} pedidos de venda`, max: Math.max(orders.length, 1),
         bars: statusOptions.map(({ value, label }) => ({ label, value: orders.filter(order => order.status === value).length })) },
       { kind: 'table', title: 'Atenção ao estoque', description: 'Produtos no limite de reposição',
-        action: { label: 'Ver estoque', href: '/app/erp/estoque', icon: 'arrow-right' }, minWidth: 300,
+        action: { label: 'Ver estoque', href: '/app/erp/estoque', icon: 'arrow-right' }, minWidth: 300, density: 'compact',
         emptyTitle: 'Estoque em dia', columns: [
           { key: 'name', header: 'Produto', sortable: true }, { key: 'quantity', header: 'Saldo', align: 'right', sortable: true },
           { key: 'minimum', header: 'Mínimo', align: 'right', sortable: true },
@@ -156,7 +157,7 @@ function servicesDashboard(orders: ServiceOrder[]): DomainDashboard {
 
   return {
     title: 'Operação de serviços', description: 'Acompanhe os chamados, as visitas e a agenda da equipe técnica.',
-    metricLabel: 'Indicadores de serviços', actions: [{ label: 'Nova ordem de serviço', href: '/app/servicos/ordens?ordem=nova', tone: 'primary' }],
+    metricLabel: 'Indicadores de serviços', minColumnWidth: '25rem', actions: [{ label: 'Nova ordem de serviço', href: '/app/servicos/ordens?ordem=nova', tone: 'primary' }],
     metrics: [
       { title: 'Aguardando agenda', value: waiting.length, description: 'Ordens sem visita marcada', tone: 'primary', variant: 'gradient', icon: 'clipboard-list' },
       { title: 'Visitas de hoje', value: orders.filter(order => order.date === today).length, description: displayDate(today), tone: 'info', variant: 'gradient', icon: 'calendar-days' },
@@ -168,7 +169,7 @@ function servicesDashboard(orders: ServiceOrder[]): DomainDashboard {
         action: { label: 'Ver agenda', href: '/app/servicos/agenda', tone: 'primary' }, emptyTitle: 'Nenhuma visita prevista',
         items: upcoming.map(order => ({ id: order.id, label: order.time, tone: statusTones[order.status], title: order.service,
           href: `/app/servicos/ordens?ordem=${order.id}`, description: `${displayDate(order.date)} · ${order.technician} · ${order.client}` })) },
-      { kind: 'bar', title: 'Carga por técnico', description: 'Atendimentos agendados ou em execução', height: 215,
+      { kind: 'bar', standalone: true, title: 'Carga por técnico', description: 'Atendimentos agendados ou em execução', height: 215,
         bars: technicians.map(technician => ({ label: technician, tone: 'info', value: orders.filter(order => order.technician === technician && order.status !== 'Concluída').length })) },
     ],
     bottom: { kind: 'timeline', title: 'Ordens aguardando agendamento', emptyTitle: 'Todas as ordens têm atendimento marcado',

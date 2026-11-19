@@ -14,7 +14,7 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@cosmemilton/ui-vue": "0.1.10",
+    "@cosmemilton/ui-vue": "0.1.11",
     "leaflet": "1.9.4",
     "lucide-vue-next": "0.577.0",
     "nuxt": "4.6.4",
