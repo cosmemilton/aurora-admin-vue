@@ -35,8 +35,8 @@ const description = computed(() => ({
   'inscricao': 'Cadastre seus dados para acessar o Aurora Ops neste navegador.',
   'recuperar-email': 'Informe o usuário para conferir uma parte do e-mail vinculado à conta neste navegador.',
   'recuperar-senha': 'Informe o e-mail da sua conta para gerar um link de recuperação neste navegador.',
-  'cadastro-de-senha': validToken.value ? 'Escolha uma nova senha para acessar a conta.'
-    : 'O link é inválido, expirou ou já foi usado. Solicite um novo link.',
+  'cadastro-de-senha': validToken.value ? 'Defina a senha que você vai usar para entrar na sua conta.'
+    : 'Solicite um link válido de recuperação para cadastrar uma nova senha.',
   'nao-encontrado': 'Confira o endereço ou volte para uma página do Aurora Ops.',
 })[props.page])
 const title = computed(() => ({
@@ -182,7 +182,7 @@ async function submit(event: Event) {
     </CmForm>
 
     <CmRow v-else-if="page === 'nao-encontrado'" gap="sm" wrap>
-      <NuxtLink class="cm-link cm-link--button" :to="user ? APP_PATHS.dashboard : APP_PATHS.loginV1">
+      <NuxtLink class="cm-link cm-link--button cm-link--tone-primary" :to="user ? APP_PATHS.dashboard : APP_PATHS.loginV1">
         {{ user ? 'Voltar ao dashboard' : 'Ir para o login' }}
       </NuxtLink>
     </CmRow>
@@ -191,7 +191,8 @@ async function submit(event: Event) {
     </NuxtLink>
     <CmForm v-else surface="plain" gap="sm" class="cm-auth-form" novalidate @submit.prevent="submit" @input="clear">
       <CmInput v-if="page === 'inscricao'" name="name" label="Nome completo" autocomplete="name" required :aria-invalid="invalid === 'name' || undefined" />
-      <CmInput v-if="page === 'inscricao' || page === 'recuperar-senha'" name="email" label="E-mail" type="email" required autocomplete="email" :aria-invalid="invalid === 'email' || undefined" />
+      <CmInput v-if="page === 'inscricao' || page === 'recuperar-senha'" name="email"
+        :label="page === 'recuperar-senha' ? 'E-mail cadastrado' : 'E-mail'" type="email" required autocomplete="email" :aria-invalid="invalid === 'email' || undefined" />
       <CmInput v-if="page === 'inscricao' || page === 'recuperar-email'" name="username" label="Usuário" required autocomplete="username" :aria-invalid="invalid === 'username' || undefined" />
       <template v-if="page === 'inscricao' || page === 'cadastro-de-senha'">
         <CmInput
@@ -209,17 +210,20 @@ async function submit(event: Event) {
       </template>
       <CmButton type="submit" tone="primary" size="lg" full-width :loading="pending">
         {{ page === 'inscricao' ? 'Criar conta' : page === 'recuperar-email' ? 'Consultar e-mail' : page === 'recuperar-senha' ? 'Gerar link de recuperação' : 'Salvar nova senha' }}
-        <template #trailingIcon><ArrowRight :size="18" aria-hidden="true" /></template>
       </CmButton>
-      <CmText v-if="answer && page === 'recuperar-email'" tone="muted">E-mail da conta: <strong>{{ answer }}</strong></CmText>
+      <CmStack v-if="answer && page === 'recuperar-email'" role="status" surface="muted" radius="md" padding="md" gap="xs">
+        <CmText tone="muted" size="sm" spacing="none">E-mail vinculado</CmText>
+        <CmText weight="semibold" spacing="none" wrap="anywhere">{{ answer }}</CmText>
+      </CmStack>
       <template v-if="page === 'recuperar-senha'">
         <CmStack v-if="answer" surface="muted" radius="md" padding="md" gap="xs">
           <CmText tone="muted" size="sm" spacing="none">Link da demonstração. Válido por 30 minutos e para um único uso.</CmText>
           <NuxtLink class="cm-auth-link" :to="{ path: APP_PATHS.setPassword, query: { token: answer }, state: routeState }">Abrir link para cadastrar nova senha</NuxtLink>
         </CmStack>
         <CmText v-else size="sm" tone="muted" spacing="none">Na demonstração, o link aparece aqui após a consulta.</CmText>
+        <NuxtLink class="cm-auth-link" :to="accountLink(APP_PATHS.recoverEmail)">Esqueci meu e-mail</NuxtLink>
       </template>
-      <NuxtLink v-if="page === 'recuperar-email'" class="cm-auth-link" :to="accountLink(APP_PATHS.recoverPassword)">Recuperar senha</NuxtLink>
+      <NuxtLink v-if="page === 'recuperar-email'" class="cm-auth-link" :to="accountLink(APP_PATHS.recoverPassword)">Esqueci minha senha</NuxtLink>
     </CmForm>
 
     <template v-if="page !== 'nao-encontrado'" #footer>

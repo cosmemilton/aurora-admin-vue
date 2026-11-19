@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { CalendarPlus } from 'lucide-vue-next'
-import { CmBadge, CmButton, CmCard, CmDataTable, CmDialog, CmForm, CmFormActions, CmGridContainer, CmNativeInput, CmNativeSelect,
-  CmPage, CmPageHeader, CmSectionHeader, CmStack, useCmToast } from '@cosmemilton/ui-vue'
+import { CalendarClock, CalendarPlus } from 'lucide-vue-next'
+import { CmBadge, CmButton, CmDataTable, CmDialog, CmForm, CmFormActions, CmListPanel, CmNativeInput, CmNativeSelect,
+  CmPage, CmPageHeader, CmText, useCmToast } from '@cosmemilton/ui-vue'
 import { compareAppointments, displayDate, localDate, orderCode, statusTones, technicians, type ServiceOrder } from '../core/servicos'
 import { useAuroraData } from '../composables/useAuroraData'
 const { serviceOrders } = useAuroraData()
@@ -23,8 +23,8 @@ const rows = computed(() => appointments.value.map(item => ({ id: item.id, cells
 } })))
 const columns = [
   { key: 'time', header: 'Horário', sortable: true, hideable: false },
-  { key: 'service', header: 'Serviço', sortable: true }, { key: 'client', header: 'Cliente', sortable: true },
-  { key: 'technician', header: 'Técnico', sortable: true }, { key: 'status', header: 'Situação' }, { key: 'id', header: 'Ordem', hideable: false },
+  { key: 'service', header: 'Serviço', sortable: true, hideable: false }, { key: 'client', header: 'Cliente', sortable: true },
+  { key: 'technician', header: 'Técnico', sortable: true }, { key: 'status', header: 'Situação', sortable: true }, { key: 'id', header: 'Ordem', hideable: false },
 ]
 const team = [{ value: '', label: 'Toda a equipe' }, ...technicians.map(value => ({ value, label: value }))]
 const allTechnicians = [{ value: '', label: 'Selecione um técnico' }, ...team.slice(1)]
@@ -55,33 +55,31 @@ function save() {
     <CmPageHeader title="Agenda técnica" description="Distribua os atendimentos por técnico, data e horário." layout="wrap">
       <template #actions><CmButton tone="primary" :disabled="!next" @click="choose(next)"><template #icon><CalendarPlus :size="16" /></template>Agendar atendimento</CmButton></template>
     </CmPageHeader>
-    <CmCard body-padding="md">
-      <template #header>
-        <CmSectionHeader :title="currentDate ? 'Visitas de ' + displayDate(currentDate) : 'Selecione a data da visita'"
-          :description="appointments.length + (appointments.length === 1 ? ' atendimento' : ' atendimentos')">
-          <template #actions><CmButton variant="outline" size="sm" @click="currentDate = localDate()">Hoje</CmButton></template>
-        </CmSectionHeader>
+    <CmListPanel :title="currentDate ? 'Visitas de ' + displayDate(currentDate) : 'Selecione a data da visita'" filter-label="Filtros da agenda técnica">
+      <template #description>
+        <CmText inline tone="muted" aria-live="polite">{{ appointments.length }} {{ appointments.length === 1 ? 'atendimento' : 'atendimentos' }}</CmText>
       </template>
-      <CmStack gap="md">
-        <CmGridContainer :columns="{ base: 1, sm: 2 }" preset="filters" role="group" aria-label="Filtros da agenda técnica">
-          <CmNativeInput id="schedule-date" v-model="currentDate" label="Data da agenda" type="date" />
-          <CmNativeSelect id="schedule-technician" v-model="technician" label="Técnico" :options="team" />
-        </CmGridContainer>
+      <template #actions><CmButton variant="outline" size="sm" @click="currentDate = localDate()">Hoje</CmButton></template>
+      <template #filters>
+        <CmNativeInput id="schedule-date" v-model="currentDate" label="Data da agenda" type="date" />
+        <CmNativeSelect id="schedule-technician" v-model="technician" label="Técnico" :options="team" />
+      </template>
         <CmDataTable
-          :rows="rows" :columns="columns" :min-width="670" :page-sizes="[20]" :page-size="20"
+          :rows="rows" :columns="columns" :min-width="670" :pagination="false" table-key="aurora.servicos.agenda"
           empty-title="Agenda livre" empty-description="Nenhuma visita para a data e o técnico selecionados." label="Agenda de atendimentos"
         >
+          <template #emptyIcon><CalendarClock :size="24" aria-hidden="true" /></template>
           <template #cell="{ row, column, value }">
-            <CmBadge v-if="column.key === 'status'" :tone="statusTones[value as ServiceOrder['status']]">{{ value }}</CmBadge>
+            <CmText v-if="column.key === 'time'" inline weight="bold">{{ value }}</CmText>
+            <CmBadge v-else-if="column.key === 'status'" :tone="statusTones[value as ServiceOrder['status']]">{{ value }}</CmBadge>
             <template v-else-if="column.key === 'id'">
-              <NuxtLink v-if="row.cells.status === 'Concluída'" :to="{ path: '/app/servicos/ordens', query: { ordem: row.id } }" class="cm-link">{{ value }}</NuxtLink>
-              <CmButton v-else variant="link" tone="primary" :aria-label="'Reagendar ' + value" @click="choose(eligible.find(item => item.id === row.id))">Reagendar</CmButton>
+              <NuxtLink v-if="row.cells.status === 'Concluída'" :to="{ path: '/app/servicos/ordens', query: { ordem: row.id } }" class="cm-link cm-link--default cm-link--tone-primary">{{ value }}</NuxtLink>
+              <CmButton v-else variant="link" tone="primary" size="sm" :aria-label="'Reagendar ' + value" @click="choose(eligible.find(item => item.id === row.id))">Reagendar</CmButton>
             </template>
             <span v-else>{{ value }}</span>
           </template>
         </CmDataTable>
-      </CmStack>
-    </CmCard>
+    </CmListPanel>
     <CmDialog :open="!!selected" :title="selected ? 'Agendar ' + orderCode(selected.id) : 'Agendar atendimento'" @close="close">
       <CmForm :id="formId" surface="plain" gap="md" @submit.prevent="save">
         <CmNativeSelect v-model="form.technician" label="Técnico" :options="allTechnicians" required />

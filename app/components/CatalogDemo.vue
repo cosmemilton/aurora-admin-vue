@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, defineComponent, h, resolveComponent, type Component, type VNodeChild } from 'vue'
-import { Home } from 'lucide-vue-next'
+import { computed, defineComponent, h, onUnmounted, reactive, resolveComponent, type Component, type VNodeChild } from 'vue'
+import { ArrowRight, Check, Home, PackageMinus, Plus } from 'lucide-vue-next'
 import { NuxtLink } from '#components'
 import * as UI from '@cosmemilton/ui-vue'
 import { APP_PATHS } from '../core/paths'
@@ -11,6 +11,8 @@ import { chartMarkup, orderAxis, pipelineStages, revenueAxis, weeklyPoints } fro
 import { useAuroraTheme } from '../composables/useAuroraTheme'
 import AuroraThemeMenu from './AuroraThemeMenu.vue'
 import CatalogMapDemo from './CatalogMapDemo.vue'
+import CatalogGallery from './CatalogGallery.vue'
+import CatalogScheduler from './CatalogScheduler.vue'
 import IsolatedDemo from './IsolatedDemo.vue'
 
 type Fixture = string | number | { tag: string; props: Record<string, unknown>; slots?: Record<string, Fixture[]>; children: Fixture[] }
@@ -18,6 +20,51 @@ type Section = { title: string; description?: string; frame?: 'basic' | 'advance
 const props = defineProps<{ item: CatalogItem; mode?: 'basic' | 'advanced' }>()
 const { theme } = useAuroraTheme()
 const { toast } = UI.useCmToast()
+type ButtonSampleGroup = {
+  attribute: 'variant' | 'tone' | 'size'
+  label: string
+  selected: string
+  options: [label: string, value: string][]
+}
+const buttonSampleGroups = reactive<ButtonSampleGroup[]>([
+  {
+    attribute: 'variant', label: 'Estilos de botão', selected: 'solid', options: [
+      ['Sólido', 'solid'], ['Contorno', 'outline'], ['Suave', 'soft'], ['Superfície', 'surface'],
+      ['Fantasma', 'ghost'], ['Link', 'link'], ['Simples', 'plain'],
+    ],
+  },
+  {
+    attribute: 'tone', label: 'Tons do botão', selected: 'default', options: [
+      ['Neutro', 'default'], ['Primário', 'primary'], ['Secundário', 'secondary'], ['Destaque', 'accent'],
+      ['Sucesso', 'success'], ['Informação', 'info'], ['Atenção', 'warning'], ['Perigo', 'danger'],
+    ],
+  },
+  {
+    attribute: 'size', label: 'Tamanhos do botão', selected: 'xs', options: [
+      ['Extra pequeno', 'xs'], ['Pequeno', 'sm'], ['Médio', 'md'], ['Grande', 'lg'], ['Extra grande', 'xl'],
+    ],
+  },
+])
+const buttonShapes = [{ value: 'default', label: 'Padrão' }, { value: 'pill', label: 'Pílula' }, { value: 'square', label: 'Quadrado' }]
+const buttonShape = ref('pill')
+const buttonWide = ref(false)
+const followingOrder = ref(false)
+const orderUnits = ref(1)
+const showOrderSummary = ref(false)
+const orderAmount = computed(() => (orderUnits.value * 25).toLocaleString('pt-BR', { minimumFractionDigits: 2 }))
+const approval = ref<'ready' | 'saving' | 'done'>('ready')
+let approvalTimer: ReturnType<typeof setTimeout> | undefined
+onUnmounted(() => clearTimeout(approvalTimer))
+
+function approveOrder() {
+  if (approval.value !== 'ready') return
+  approval.value = 'saving'
+  approvalTimer = setTimeout(() => {
+    approval.value = 'done'
+    toast('Pedido de exemplo aprovado.', { tone: 'success' })
+  }, 900)
+}
+
 const display = ref(false)
 const demoPage = ref(1)
 const value = ref('')
@@ -86,13 +133,19 @@ function understood(node: Fixture): boolean {
   return (nativeTags.has(node.tag) || !!find(node.tag)) &&
     node.children.every(understood) && Object.values(node.slots ?? {}).flat().every(understood)
 }
+function isFixtureNode(value: unknown): value is Extract<Fixture, object> {
+  return value !== null && typeof value === 'object' && 'tag' in value && 'children' in value
+}
 function render(node: Fixture): VNodeChild {
   if (typeof node !== 'object') return node
   const props = { ...node.props }
   if (find(node.tag) === links) { props.to = props.href; delete props.href }
   if (node.tag === 'CmBreadcrumb' && Array.isArray(props.items)) {
-    props.items = props.items.map(item => typeof item.href === 'string' && item.href.startsWith('/app/')
-      ? { ...item, href: router.resolve(item.href).href } : item)
+    props.items = props.items.map(item => ({
+      ...item,
+      label: isFixtureNode(item.label) ? render(item.label) : item.label,
+      href: typeof item.href === 'string' && item.href.startsWith('/app/') ? router.resolve(item.href).href : item.href,
+    }))
   }
   if ('htmlFor' in props) { props.for = props.htmlFor; delete props.htmlFor }
   if (node.tag === 'button') props.type ??= 'button'
@@ -140,14 +193,62 @@ function notify() { toast('Alteração concluída.', { tone: 'success' }) }
         <iframe v-if="!mode && section.frame" :src="frameUrl(section)" :title="item.name + ' · ' + section.title"
           class="cm-frame cm-frame--framed" height="320" style="--cm-frame-height:320px" />
         <CatalogMapDemo v-else-if="item.name === 'CmMap'" :interactive="section.index > 0" />
+        <CatalogGallery v-else-if="item.name === 'CmGallery' || item.name === 'CmLightbox'"
+          :advanced="section.index > 0" :lightbox="item.name === 'CmLightbox'" />
+        <CatalogScheduler v-else-if="item.name === 'CmScheduler'" :advanced="section.index > 0" />
         <StaticExample v-else-if="section.tree && renderable(section.tree)" :tree="section.tree" />
         <UI.CmButton v-else-if="item.reference || item.name.startsWith('CmToast')" tone="primary" @click="notify">
           {{ item.reference ? 'Testar aviso' : 'Exibir toast' }}
         </UI.CmButton>
-        <UI.CmStack v-else-if="item.name === 'CmButton'" gap="md">
-          <UI.CmRow gap="sm" wrap><UI.CmButton tone="primary" @click="notify">Salvar</UI.CmButton>
-            <UI.CmButton variant="outline" @click="notify">Cancelar</UI.CmButton><UI.CmButton disabled>Indisponível</UI.CmButton></UI.CmRow>
-        </UI.CmStack>
+        <template v-else-if="item.name === 'CmButton'">
+          <template v-if="section.index < buttonSampleGroups.length">
+            <UI.CmStack v-for="group in buttonSampleGroups.slice(section.index, section.index + 1)" :key="group.attribute" gap="md">
+              <UI.CmRow role="group" :aria-label="group.label" gap="sm" align="center" wrap>
+                <UI.CmButton v-for="[label, option] in group.options" :key="option"
+                  v-bind="{ tone: 'primary', [group.attribute]: option }" :aria-pressed="group.selected === option"
+                  @click="group.selected = option">{{ label }}</UI.CmButton>
+              </UI.CmRow>
+              <UI.CmText as="code" family="mono" size="sm" tone="muted" role="status" wrap="anywhere">{{ group.attribute }}="{{ group.selected }}"</UI.CmText>
+            </UI.CmStack>
+          </template>
+          <UI.CmStack v-else-if="section.index === 3" gap="md">
+            <UI.CmRow align="center" gap="md" wrap>
+              <UI.CmNativeSelect v-model="buttonShape" label="Formato" :options="buttonShapes" />
+              <UI.CmCheckbox v-model="buttonWide" label="Ocupar toda a largura" />
+            </UI.CmRow>
+            <UI.CmRow>
+              <UI.CmButton :shape="buttonShape" :full-width="buttonWide" tone="primary" variant="outline"
+                :aria-pressed="followingOrder" @click="followingOrder = !followingOrder">
+                {{ followingOrder ? 'Acompanhando pedido' : 'Acompanhar pedido' }}
+              </UI.CmButton>
+            </UI.CmRow>
+          </UI.CmStack>
+          <UI.CmStack v-else-if="section.index === 4" gap="md">
+            <UI.CmRow gap="sm" align="center" wrap>
+              <UI.CmButton tone="primary" @click="orderUnits++">
+                <template #icon><Plus :size="16" aria-hidden="true" /></template>Adicionar unidade
+              </UI.CmButton>
+              <UI.CmButton icon-only variant="outline" aria-label="Retirar uma unidade" title="Retirar uma unidade"
+                :disabled="orderUnits === 0" @click="orderUnits--">
+                <template #icon><PackageMinus :size="16" aria-hidden="true" /></template>
+              </UI.CmButton>
+              <UI.CmButton variant="ghost" :aria-expanded="showOrderSummary" @click="showOrderSummary = !showOrderSummary">
+                {{ showOrderSummary ? 'Ocultar resumo' : 'Ver resumo' }}
+                <template #trailingIcon><ArrowRight :size="16" aria-hidden="true" /></template>
+              </UI.CmButton>
+            </UI.CmRow>
+            <UI.CmText role="status">{{ orderUnits }} {{ orderUnits === 1 ? 'unidade' : 'unidades' }} no pedido</UI.CmText>
+            <UI.CmText v-if="showOrderSummary" size="sm" tone="muted">Pedido 1048 · Retirada no balcão · R$ {{ orderAmount }}</UI.CmText>
+          </UI.CmStack>
+          <UI.CmRow v-else gap="sm" align="center" wrap>
+            <UI.CmButton tone="primary" :loading="approval === 'saving'" loading-label="Aprovando pedido…"
+              :disabled="approval === 'done'" @click="approveOrder">
+              <template #icon><Check :size="16" aria-hidden="true" /></template>
+              {{ approval === 'done' ? 'Pedido aprovado' : 'Aprovar pedido' }}
+            </UI.CmButton>
+            <UI.CmButton variant="outline" :disabled="approval !== 'done'" @click="approval = 'ready'">Reiniciar exemplo</UI.CmButton>
+          </UI.CmRow>
+        </template>
         <UI.CmInput v-else-if="item.name === 'CmInput'" v-model="value" label="Nome do produto" placeholder="Ex. Monitor" />
         <UI.CmTextarea v-else-if="item.name === 'CmTextarea'" v-model="value" label="Observações" placeholder="Digite uma observação" />
         <UI.CmNativeInput v-else-if="item.name === 'CmNativeInput'" v-model="value" label="Referência do pedido" />

@@ -1,4 +1,36 @@
 {
+  "CmButton": {
+    "source": "app/components/CatalogDemo.vue",
+    "sections": [
+      { "title": "Estilos", "description": "Selecione um botão para conferir o valor de variant." },
+      { "title": "Tons semânticos", "description": "Confira as cores da paleta do tema atual." },
+      { "title": "Tamanhos", "description": "Compare as cinco alturas disponíveis." },
+      { "title": "Formato e largura", "description": "Ajuste o formato e a largura do botão de acompanhamento." },
+      { "title": "Ícones e rótulos", "description": "Ajuste a quantidade e abra o resumo do pedido." },
+      { "title": "Estados de uma ação", "description": "A aprovação simulada bloqueia novos cliques durante o processamento." }
+    ]
+  },
+  "CmGallery": {
+    "source": "app/components/CatalogGallery.vue",
+    "sections": [
+      { "title": "Grade de capturas", "wide": true },
+      { "title": "Galeria responsiva com ampliação", "description": "Abra uma captura do Aurora, amplie a imagem e percorra os outros painéis pelas miniaturas.", "wide": true }
+    ]
+  },
+  "CmLightbox": {
+    "source": "app/components/CatalogGallery.vue",
+    "sections": [
+      { "title": "Ampliação de uma captura" },
+      { "title": "Inspeção do painel selecionado", "description": "Abra diretamente no painel escolhido e sincronize a seleção com a navegação no visualizador." }
+    ]
+  },
+  "CmScheduler": {
+    "source": "app/components/CatalogScheduler.vue",
+    "sections": [
+      { "title": "Agenda do dia", "wide": true },
+      { "title": "Agendamento de visitas no dia ou na semana", "description": "Alterne entre dia e semana, consulte eventos e reserve uma visita ao selecionar um horário livre.", "wide": true }
+    ]
+  },
   "CmBarChart": {
     "source": "app/components/CatalogDemo.vue",
     "sections": [

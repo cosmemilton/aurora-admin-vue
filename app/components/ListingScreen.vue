@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ArrowRight, ClipboardList, Plus, UserRoundPlus } from 'lucide-vue-next'
-import { CmAvatar, CmBadge, CmButton, CmCard, CmDataTable, CmDialog, CmForm, CmFormActions, CmGridContainer,
+import { ClipboardList, PackageSearch, Plus, UserRoundPlus, Users, Wallet } from 'lucide-vue-next'
+import { CmAvatar, CmBadge, CmButton, CmCard, CmDataTable, CmDialog, CmForm, CmFormActions, CmListPanel,
   CmNativeInput, CmNativeSelect, CmPage, CmPageHeader, CmRow, CmSectionHeader, CmStack, CmText, useCmToast } from '@cosmemilton/ui-vue'
 import { filterListing, getListing, type ListingAction, type ListingCell } from '../core/listings'
 import { clientStatus, newCrmId, type CrmClient } from '../core/crm'
 import { formatMoney, formatOrderDate, orderStatuses, orderTotal, statusOptions as orderOptions, type OrderStatus } from '../core/erp'
-import { financeDate, financeMoney, type EntryKind, type FinanceEntry } from '../core/financeiro'
-import { emptyOrder, orderCode, statuses, technicians, type ServiceOrder } from '../core/servicos'
+import { entryKindLabels, financeDate, financeMoney, type EntryKind, type FinanceEntry } from '../core/financeiro'
+import { emptyOrder, statuses, technicians, type ServiceOrder } from '../core/servicos'
 import { useAuroraData } from '../composables/useAuroraData'
 import StatusFilter from './StatusFilter.vue'
 
@@ -15,20 +15,34 @@ type Option = { label: string; value: string }
 type Field = { key: string; label: string; type?: string; options?: Option[]; required?: boolean; min?: number }
 const props = defineProps<{ path: string }>()
 const route = useRoute()
+const router = useRouter()
 const { clients, inventory, orders, entries, serviceOrders } = useAuroraData()
 const { toast } = useCmToast()
 const query = ref('')
-const status = ref(typeof route.query.situacao === 'string' ? route.query.situacao : '')
+const searchField = ref<{ focus: () => void }>()
+const isServiceOrders = props.path === '/app/servicos/ordens'
+const isFinance = props.path === '/app/financeiro/lancamentos'
+const isInventory = props.path === '/app/erp/estoque'
+const status = ref('')
+const kind = ref('')
 const editor = ref<{ action: EditorAction; id?: string | number }>()
 const draft = reactive<Record<string, string>>({})
 const formId = useId()
 const selectedOrderId = ref('')
 const listing = computed(() => getListing(props.path, { clients: clients.value, inventory: inventory.value,
   orders: orders.value, entries: entries.value, serviceOrders: serviceOrders.value })!)
-const filtered = computed(() => filterListing(listing.value, query.value, status.value))
+if (typeof route.query.situacao === 'string' && listing.value.statusOptions?.some(option => option.value === route.query.situacao)) {
+  status.value = route.query.situacao
+}
+const filtered = computed(() => filterListing(listing.value, query.value, status.value, kind.value))
+const pageResetKey = computed(() => JSON.stringify([query.value, status.value, kind.value]))
+const kinds = [{ label: 'Todos os tipos', value: '' },
+  ...Object.entries(entryKindLabels).map(([value, label]) => ({ value, label }))]
+const emptyIcons = new Map([['/app/crm/clientes', Users], ['/app/erp/estoque', PackageSearch], ['/app/financeiro/lancamentos', Wallet]])
+const emptyIcon = emptyIcons.get(props.path) ?? ClipboardList
 const tableDescription = computed(() => {
   const count = filtered.value.length
-  if (props.path === '/app/erp/estoque') return count + (count === 1 ? ' produto encontrado' : ' produtos encontrados')
+  if (isInventory) return count + (count === 1 ? ' produto encontrado' : ' produtos encontrados')
   return count + ' de ' + listing.value.rows.length + ' ' + listing.value.recordName
 })
 const displayedOrder = computed(() => orders.value.find(item => item.id === selectedOrderId.value))
@@ -71,7 +85,27 @@ function serviceFields(): Field[] {
     { key: 'status', label: 'Situação', options: toOptions(statuses) },
     { key: 'date', label: 'Data', type: 'date' }, { key: 'time', label: 'Horário', type: 'time' }]
 }
-function close() { editor.value = undefined }
+function close() {
+  if (isServiceOrders) updateServiceQuery({ ordem: undefined })
+  else editor.value = undefined
+}
+function updateServiceQuery(query: { ordem?: string; situacao?: string }) {
+  return router.replace({ query: { ...route.query, ...query } })
+}
+function changeStatus(value: string) {
+  status.value = value
+  if (isServiceOrders) void updateServiceQuery({ situacao: value || undefined })
+}
+function clearFilters() {
+  query.value = ''
+  kind.value = ''
+  changeStatus('')
+  nextTick(() => searchField.value?.focus())
+}
+function edit(action: EditorAction, id?: string | number) {
+  if (isServiceOrders) void updateServiceQuery({ ordem: id ? String(id) : 'nova' })
+  else open(action, id)
+}
 function open(action: EditorAction, id?: string | number) {
   if (action === 'select-order') { selectedOrderId.value = String(id); return }
   for (const key of Object.keys(draft)) delete draft[key]
@@ -85,9 +119,15 @@ function open(action: EditorAction, id?: string | number) {
     : { settledDate: financeDate() }
   if (record) for (const [key, value] of Object.entries(record)) draft[key] = String(value ?? '')
 }
-if (props.path === '/app/servicos/ordens') {
-  if (route.query.ordem === 'nova') open('new-service')
-  else if (route.query.ordem && serviceOrders.value.some(item => item.id === Number(route.query.ordem))) open('edit-service-order', Number(route.query.ordem))
+if (isServiceOrders) {
+  watch(() => route.query.ordem, selected => {
+    if (selected === 'nova') open('new-service')
+    else if (typeof selected === 'string' && serviceOrders.value.some(item => item.id === Number(selected))) open('edit-service-order', Number(selected))
+    else editor.value = undefined
+  }, { immediate: true })
+  watch(() => route.query.situacao, value => {
+    status.value = listing.value.statusOptions?.find(option => option.value === value)?.value ?? ''
+  })
 }
 
 function save() {
@@ -146,41 +186,47 @@ function changeOrder(value: string) {
   <CmPage padding="none" gap="lg">
     <CmPageHeader :title="listing.title" :description="listing.description" layout="wrap">
       <template v-if="newButton" #actions>
-        <CmButton tone="primary" @click="open(newButton.action)">
-          <template #icon><component :is="newButton.action === 'new-client' ? UserRoundPlus : Plus" :size="17" aria-hidden="true" /></template>{{ newButton.label }}
+        <NuxtLink v-if="isFinance" to="/app/dashboard/financeiro" class="cm-link cm-link--button">Visão financeira</NuxtLink>
+        <CmButton tone="primary" @click="edit(newButton.action)">
+          <template #icon><component :is="newButton.action === 'new-client' ? UserRoundPlus : Plus" :size="isServiceOrders || isFinance ? 16 : 17" aria-hidden="true" /></template>{{ newButton.label }}
         </CmButton>
       </template>
     </CmPageHeader>
-    <CmCard body-padding="md">
-      <template #header><CmSectionHeader :title="listing.tableTitle" :description="tableDescription" /></template>
-      <CmStack gap="md">
-        <CmGridContainer :columns="{ base: 1, sm: 2 }" spacing="md" preset="filters" role="group" :aria-label="listing.filterLabel">
-          <CmNativeInput v-model="query" type="search" :label="listing.queryLabel" :placeholder="listing.queryPlaceholder" />
-          <StatusFilter v-if="listing.statusOptions" v-model="status" :options="listing.statusOptions" />
-        </CmGridContainer>
+    <CmListPanel :title="listing.tableTitle" :filter-label="listing.filterLabel">
+      <template #description><CmText inline tone="muted" aria-live="polite">{{ tableDescription }}</CmText></template>
+      <template #filters>
+        <CmNativeInput ref="searchField" v-model="query" type="search" :label="listing.queryLabel" :placeholder="listing.queryPlaceholder" />
+        <CmNativeSelect v-if="isFinance" v-model="kind" label="Tipo" :options="kinds" />
+        <StatusFilter v-if="listing.statusOptions" :model-value="status" :options="listing.statusOptions" @update:model-value="changeStatus" />
+      </template>
         <CmDataTable
           :columns="listing.columns" :rows="filtered" :table-key="path" :label="listing.tableTitle" :record-name="listing.recordName"
-          :pagination="props.path === '/app/erp/pedidos' || props.path === '/app/financeiro/lancamentos'"
+          :pagination="props.path === '/app/erp/pedidos' || isFinance" :page-size="isFinance ? 20 : 10" :page-reset-key="pageResetKey"
+          :default-sort-key="isFinance ? 'dueDate' : undefined" :default-sort-direction="isFinance ? 'desc' : 'asc'"
           :min-width="listing.minimumTableWidth" :empty-title="listing.emptyTitle" :empty-description="listing.emptyDescription"
         >
+          <template #emptyIcon><component :is="emptyIcon" :size="24" aria-hidden="true" /></template>
+          <template #emptyActions><CmButton variant="outline" size="sm" @click="clearFilters">{{ isInventory ? 'Limpar busca' : 'Limpar filtros' }}</CmButton></template>
           <template #cell="{ row, value }">
-            <CmButton v-if="cell(value).action" :variant="cell(value).action === 'select-order' ? 'link' : 'outline'" size="sm"
-              :aria-label="cell(value).action === 'select-order' ? 'Ver detalhes do pedido #' + row.id : cell(value).actionLabel" @click="open(cell(value).action!, row.id)">{{ cell(value).text }}</CmButton>
-            <NuxtLink v-else-if="cell(value).href" :to="cell(value).href" class="cm-link" :aria-label="cell(value).actionLabel">{{ cell(value).text }}</NuxtLink>
+            <CmButton v-if="cell(value).action === 'select-order' || cell(value).action === 'edit-service-order'" variant="link" tone="primary" size="sm"
+              :aria-label="cell(value).action === 'select-order' ? 'Ver detalhes do pedido #' + row.id : cell(value).actionLabel" @click="edit(cell(value).action!, row.id)">{{ cell(value).text }}</CmButton>
+            <CmButton v-else-if="cell(value).action" variant="outline" presentation="tableAction" size="sm"
+              :aria-label="cell(value).actionLabel" @click="edit(cell(value).action!, row.id)">{{ cell(value).text }}</CmButton>
+            <NuxtLink v-else-if="cell(value).href" :to="cell(value).href" class="cm-link cm-link--default cm-link--tone-primary" :aria-label="cell(value).actionLabel">{{ cell(value).text }}</NuxtLink>
             <CmBadge v-else-if="cell(value).tone" :tone="cell(value).tone">{{ cell(value).text }}</CmBadge>
             <CmRow v-else-if="cell(value).detail" align="center" gap="sm">
-              <CmAvatar v-if="cell(value).avatar" :name="cell(value).text" :initials="cell(value).avatar" size="sm" />
-              <CmStack gap="none">
-                <CmText as="span" weight="semibold" spacing="none">{{ cell(value).text }}</CmText>
-                <CmText as="span" size="sm" tone="muted" spacing="none">{{ cell(value).detail }}</CmText>
+              <CmAvatar v-if="cell(value).avatar" :fallback="cell(value).avatar" size="sm" aria-hidden="true" />
+              <CmStack gap="xs" :min-width="0">
+                <CmText :weight="cell(value).emphasis ? 'bold' : 'semibold'" wrap="anywhere">{{ cell(value).text }}</CmText>
+                <CmText size="sm" tone="muted" wrap="anywhere">{{ cell(value).detail }}</CmText>
               </CmStack>
             </CmRow>
-            <time v-else-if="cell(value).dateTime" :datetime="cell(value).dateTime">{{ cell(value).text }}</time>
+            <CmText v-else-if="cell(value).dateTime" as="time" :datetime="cell(value).dateTime" :white-space="cell(value).noWrap ? 'nowrap' : undefined">{{ cell(value).text }}</CmText>
+            <CmText v-else-if="cell(value).emphasis" inline weight="bold" :white-space="cell(value).noWrap ? 'nowrap' : undefined">{{ cell(value).text }}</CmText>
             <span v-else>{{ cell(value).text }}</span>
           </template>
         </CmDataTable>
-      </CmStack>
-    </CmCard>
+    </CmListPanel>
     <CmCard v-if="displayedOrder" body-padding="md">
       <template #header>
         <CmSectionHeader :title="'Pedido #' + displayedOrder.id" :description="displayedOrder.customer + ' · ' + formatOrderDate(displayedOrder.date)">

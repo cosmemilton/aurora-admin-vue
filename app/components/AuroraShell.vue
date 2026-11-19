@@ -89,6 +89,7 @@ watch(() => route.fullPath, async () => {
     <template #sidebar="{ closeMobileSidebar, mobileSidebarOpen }">
       <CmSidebar
         :groups="groups" :active-pathname="pathname" :link-component="RouterLink"
+        :default-open-group="pathname === APP_PATHS.catalog ? categories[0].id : undefined"
         :force-open="mobileSidebarOpen" :nav-label="inCatalog ? 'Menu de componentes' : 'Menu principal'"
         brand="Aurora Ops" @navigate="closeMobileSidebar"
       >

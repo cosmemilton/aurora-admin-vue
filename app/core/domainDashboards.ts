@@ -15,14 +15,15 @@ export type DashboardItem = {
   value?: string
   avatar?: string
   badge?: string
+  dateTime?: string
   tone?: string
   href?: string
   action?: DashboardLink
 }
 
-type Section = { title: string; description?: string; action?: DashboardLink; emptyTitle?: string }
+type Section = { title: string; description?: string; action?: DashboardLink; emptyTitle?: string; emptyDescription?: string; emptyIcon?: string }
 export type DashboardSection = Section & (
-  | { kind: 'bar'; bars: DashboardBar[]; standalone?: boolean; height?: number; formatter?: (value: number) => string; note?: DashboardItem }
+  | { kind: 'bar'; bars: DashboardBar[]; standalone?: boolean; height?: number; formatter?: (value: number) => string; note?: DashboardItem; chartLabel?: string }
   | { kind: 'progress'; bars: DashboardBar[]; max: number }
   | { kind: 'list' | 'timeline'; items: DashboardItem[]; connected?: boolean }
   | { kind: 'table'; columns: ListingColumn[]; rows: ListingRow[]; minWidth: number; density?: string }
@@ -32,7 +33,9 @@ export type DomainDashboard = {
   title: string
   description: string
   metricLabel: string
-  minColumnWidth?: string
+  minColumnWidth: string
+  sectionSpacing?: 'md'
+  metricIconSize: number
   actions: DashboardLink[]
   metrics: DashboardMetric[]
   sections: DashboardSection[]
@@ -53,7 +56,7 @@ function crmDashboard(clients: CrmClient[], opportunities: CrmOpportunity[]): Do
 
   return {
     title: 'CRM', description: 'Acompanhe sua carteira de clientes e negociações em andamento.',
-    metricLabel: 'Indicadores de CRM', actions: [],
+    metricLabel: 'Indicadores de CRM', minColumnWidth: '26rem', metricIconSize: 18, actions: [],
     metrics: [
       { title: 'Valor em aberto', value: formatCrmCurrency(open.reduce((sum, deal) => sum + deal.value, 0)), description: 'No funil comercial', tone: 'primary', variant: 'gradient', icon: 'hand-coins' },
       { title: 'Clientes ativos', value: clients.filter(client => client.status === 'active').length, description: `${clients.filter(client => client.status === 'prospect').length} em prospecção`, tone: 'info', icon: 'users' },
@@ -62,7 +65,7 @@ function crmDashboard(clients: CrmClient[], opportunities: CrmOpportunity[]): Do
     ],
     sections: [
       { kind: 'bar', title: 'Distribuição do funil', description: 'Valor das oportunidades em aberto por etapa.',
-        action: { label: 'Ver funil', href: '/app/crm/oportunidades', icon: 'arrow-right' },
+        action: { label: 'Ver funil', href: '/app/crm/oportunidades', icon: 'arrow-right' }, chartLabel: 'Valor por etapa do funil',
         bars: open.length ? opportunityStages.filter(stage => stage.id !== 'won').map(stage => ({
           label: stage.label, tone: stage.tone,
           value: open.filter(deal => deal.stage === stage.id).reduce((sum, deal) => sum + deal.value, 0),
@@ -90,7 +93,8 @@ function erpDashboard(orders: Order[], products: Product[]): DomainDashboard {
 
   return {
     title: 'Painel do ERP', description: 'Acompanhe vendas, pedidos e os produtos que precisam de reposição.',
-    metricLabel: 'Indicadores do ERP', minColumnWidth: '26rem', actions: [{ label: 'Gerenciar pedidos', href: '/app/erp/pedidos', icon: 'clipboard-list' }],
+    metricLabel: 'Indicadores do ERP', minColumnWidth: '26rem', metricIconSize: 18,
+    actions: [{ label: 'Gerenciar pedidos', href: '/app/erp/pedidos', icon: 'clipboard-list' }],
     metrics: [
       { title: 'Receita confirmada', value: formatMoney(sold.reduce((sum, order) => sum + orderTotal(order), 0)), description: 'Pedidos aprovados, enviados e entregues', tone: 'primary', variant: 'gradient', icon: 'circle-dollar-sign' },
       { title: 'Pedidos pendentes', value: pending.length, description: 'Aguardando aprovação', tone: 'warning', variant: 'soft', icon: 'clipboard-list' },
@@ -102,7 +106,7 @@ function erpDashboard(orders: Order[], products: Product[]): DomainDashboard {
         bars: statusOptions.map(({ value, label }) => ({ label, value: orders.filter(order => order.status === value).length })) },
       { kind: 'table', title: 'Atenção ao estoque', description: 'Produtos no limite de reposição',
         action: { label: 'Ver estoque', href: '/app/erp/estoque', icon: 'arrow-right' }, minWidth: 300, density: 'compact',
-        emptyTitle: 'Estoque em dia', columns: [
+        emptyTitle: 'Estoque em dia', emptyDescription: 'Todos os produtos estão acima do saldo mínimo.', emptyIcon: 'package-check', columns: [
           { key: 'name', header: 'Produto', sortable: true }, { key: 'quantity', header: 'Saldo', align: 'right', sortable: true },
           { key: 'minimum', header: 'Mínimo', align: 'right', sortable: true },
         ], rows: lowStock.map(product => ({
@@ -110,10 +114,10 @@ function erpDashboard(orders: Order[], products: Product[]): DomainDashboard {
           cells: { name: { text: product.name }, quantity: { text: product.quantity, tone: stockStatus(product).tone }, minimum: { text: product.minimum } },
         })) },
     ],
-    bottom: { kind: 'table', title: 'Pedidos recentes', emptyTitle: 'Nenhum pedido registrado', minWidth: 500,
+    bottom: { kind: 'table', title: 'Pedidos recentes', emptyTitle: 'Nenhum pedido registrado', emptyIcon: 'clipboard-list', minWidth: 500,
       action: { label: 'Ver pedidos', href: '/app/erp/pedidos', icon: 'arrow-right' },
       columns: orderList.columns.filter(column => column.key !== 'payment'), rows: orderList.rows.map(row => ({
-        ...row, cells: { ...row.cells, id: { text: row.cells.id?.text ?? '' } },
+        ...row, cells: { ...row.cells, id: { text: row.cells.id?.text ?? '', sortValue: row.cells.id?.sortValue, emphasis: true } },
       })) },
   }
 }
@@ -128,7 +132,7 @@ function financeDashboard(entries: FinanceEntry[]): DomainDashboard {
 
   return {
     title: 'Financeiro', description: 'Acompanhe as contas a receber, os pagamentos e o saldo da operação.',
-    metricLabel: 'Indicadores financeiros', actions: [
+    metricLabel: 'Indicadores financeiros', minColumnWidth: '26rem', metricIconSize: 19, actions: [
       { label: 'Ver fluxo de caixa', href: '/app/financeiro/fluxo-de-caixa' },
       { label: 'Lançamentos', href: '/app/financeiro/lancamentos', icon: 'arrow-right', tone: 'primary' },
     ],
@@ -142,8 +146,9 @@ function financeDashboard(entries: FinanceEntry[]): DomainDashboard {
       { kind: 'bar', title: 'Compromissos dos próximos 15 dias', description: 'Vencimentos a partir de hoje, sem incluir os atrasados.', height: 160, formatter: financeCompactMoney,
         bars: [{ label: 'A receber', value: sumFinance(upcoming, 'entrada'), tone: 'success' }, { label: 'A pagar', value: sumFinance(upcoming, 'saida'), tone: 'warning' }] },
       { kind: 'list', title: 'Agenda de vencimentos', description: 'Os cinco lançamentos em aberto com vencimento mais próximo ou em atraso.',
-        emptyTitle: 'Nenhum vencimento em aberto', items: next.map(entry => ({
-          id: entry.id, title: entry.contact, description: `${entry.kind === 'entrada' ? 'Receber' : 'Pagar'} até ${financeShortDate(entry.dueDate)}`,
+        emptyTitle: 'Nenhum vencimento em aberto', emptyIcon: 'calendar-clock', items: next.map(entry => ({
+          id: entry.id, title: entry.contact, label: `${entry.kind === 'entrada' ? 'Receber' : 'Pagar'} até`,
+          description: financeShortDate(entry.dueDate), dateTime: entry.dueDate,
           value: financeMoney(entry.cents), badge: financeStatus(entry, today) === 'vencido' ? 'Vencido' : undefined, tone: 'danger',
         })) },
     ],
@@ -157,7 +162,8 @@ function servicesDashboard(orders: ServiceOrder[]): DomainDashboard {
 
   return {
     title: 'Operação de serviços', description: 'Acompanhe os chamados, as visitas e a agenda da equipe técnica.',
-    metricLabel: 'Indicadores de serviços', minColumnWidth: '25rem', actions: [{ label: 'Nova ordem de serviço', href: '/app/servicos/ordens?ordem=nova', tone: 'primary' }],
+    metricLabel: 'Indicadores de serviços', minColumnWidth: '25rem', sectionSpacing: 'md', metricIconSize: 20,
+    actions: [{ label: 'Nova ordem de serviço', href: '/app/servicos/ordens?ordem=nova', tone: 'primary' }],
     metrics: [
       { title: 'Aguardando agenda', value: waiting.length, description: 'Ordens sem visita marcada', tone: 'primary', variant: 'gradient', icon: 'clipboard-list' },
       { title: 'Visitas de hoje', value: orders.filter(order => order.date === today).length, description: displayDate(today), tone: 'info', variant: 'gradient', icon: 'calendar-days' },

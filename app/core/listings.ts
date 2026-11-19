@@ -9,6 +9,8 @@ export type ListingCell = {
   detail?: string
   avatar?: string
   dateTime?: string
+  emphasis?: boolean
+  noWrap?: boolean
   tone?: string
   action?: ListingAction
   actionLabel?: string
@@ -23,7 +25,7 @@ export type ListingColumn = {
   hideable?: boolean
   defaultHidden?: boolean
 }
-export type ListingRow = { id: string | number; status: string; search: string; cells: Record<string, ListingCell> }
+export type ListingRow = { id: string | number; status: string; search: string; kind?: string; cells: Record<string, ListingCell> }
 export type Listing = {
   title: string
   description: string
@@ -51,9 +53,10 @@ function normalize(value: string) {
   return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').trim().toLowerCase()
 }
 
-export function filterListing(listing: Listing, query: string, status = '') {
+export function filterListing(listing: Listing, query: string, status = '', kind = '') {
   const terms = normalize(query).split(/\s+/u).filter(Boolean)
-  return listing.rows.filter(row => (!status || status === row.status) && terms.every(term => normalize(row.search).includes(term)))
+  return listing.rows.filter(row => (!status || status === row.status) && (!kind || kind === row.kind) &&
+    terms.every(term => normalize(row.search).includes(term)))
 }
 
 function crmClients(clients: CrmClient[]): Listing {
@@ -130,7 +133,7 @@ function erpInventory(inventory: Product[]): Listing {
       return {
         id: product.sku, status: status.label, search: `${product.name} ${product.sku} ${product.category}`,
         cells: {
-          sku: { text: product.sku }, name: { text: product.name }, category: { text: product.category },
+          sku: { text: product.sku, emphasis: true }, name: { text: product.name }, category: { text: product.category },
           quantity: { text: product.quantity }, minimum: { text: product.minimum },
           status: { text: status.label, tone: status.tone },
           actions: { text: 'Ajustar', action: 'adjust-stock', actionLabel: `Ajustar estoque de ${product.name}` },
@@ -142,10 +145,10 @@ function erpInventory(inventory: Product[]): Listing {
 
 function financeEntries(entries: FinanceEntry[]): Listing {
   return {
-    title: 'Lançamentos', description: 'Acompanhe as contas a receber e a pagar e registre as liquidações.', tableTitle: 'Contas a receber e a pagar',
-    filterLabel: 'Filtros de lançamentos', queryLabel: 'Buscar lançamento', queryPlaceholder: 'Descrição, contato ou categoria',
+    title: 'Lançamentos', description: 'Cadastre contas a receber ou a pagar e registre a liquidação quando o dinheiro entrar ou sair.', tableTitle: 'Contas a receber e a pagar',
+    filterLabel: 'Filtros de lançamentos', queryLabel: 'Buscar lançamento', queryPlaceholder: 'Descrição, contato, categoria',
     emptyTitle: 'Nenhum lançamento encontrado', emptyDescription: 'Experimente outro termo ou situação.',
-    recordName: 'lançamentos', minimumTableWidth: 720,
+    recordName: 'lançamentos', minimumTableWidth: 880,
     statusOptions: [{ value: 'pendente', label: 'Em aberto' }, { value: 'vencido', label: 'Vencido' }, { value: 'liquidado', label: 'Liquidado' }],
     columns: [
       { key: 'description', header: 'Lançamento', sortable: true, hideable: false },
@@ -160,12 +163,12 @@ function financeEntries(entries: FinanceEntry[]): Listing {
       const income = entry.kind === 'entrada'
       const settleLabel = income ? 'Registrar recebimento' : 'Registrar pagamento'
       return {
-        id: entry.id, status, search: `${entry.description} ${entry.contact} ${entry.category}`,
+        id: entry.id, status, kind: entry.kind, search: `${entry.description} ${entry.contact} ${entry.category}`,
         cells: {
-          description: { text: entry.description, detail: `${entry.contact} · ${entry.category}` },
+          description: { text: entry.description, detail: `${entry.contact} · ${entry.category}`, emphasis: true },
           kind: { text: entryKindLabels[entry.kind], tone: income ? 'success' : 'info' },
-          dueDate: { text: financeDateLabel(entry.dueDate), dateTime: entry.dueDate, sortValue: entry.dueDate },
-          cents: { text: financeMoney(entry.cents), sortValue: entry.cents },
+          dueDate: { text: financeDateLabel(entry.dueDate), dateTime: entry.dueDate, sortValue: entry.dueDate, noWrap: true },
+          cents: { text: financeMoney(entry.cents), sortValue: entry.cents, emphasis: true, noWrap: true },
           status: { text: status === 'vencido' ? 'Vencido' : status === 'pendente' ? 'Em aberto' : income ? 'Recebido' : 'Pago',
             tone: status === 'vencido' ? 'danger' : status === 'pendente' ? 'warning' : 'success' },
           settledDate: entry.settledDate

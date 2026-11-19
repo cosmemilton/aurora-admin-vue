@@ -1,0 +1,17 @@
+[
+  {
+    "file": "visao-geral.jpg",
+    "alt": "Visão geral do Aurora com o cartão de metas e os indicadores da operação",
+    "caption": "Visão geral da operação"
+  },
+  {
+    "file": "financeiro.jpg",
+    "alt": "Painel financeiro com recebimentos, pagamentos e fluxo de caixa",
+    "caption": "Resumo financeiro"
+  },
+  {
+    "file": "servicos.jpg",
+    "alt": "Indicadores de serviços e agenda das próximas visitas",
+    "caption": "Operação de serviços"
+  }
+]

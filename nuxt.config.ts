@@ -26,6 +26,7 @@ export default defineNuxtConfig({
   hooks: {
     ready(nuxt) {
       const { baseURL, head } = nuxt.options.app
+      head.link = [...(head.link ?? []), { rel: 'icon', type: 'image/svg+xml', href: `${baseURL.replace(/\/+$/, '')}/aurora-ops.svg` }]
       head.script = [...(head.script ?? []), { key: 'aurora-theme-before-paint', innerHTML: themeBeforePaint(baseURL) }]
     },
   },
